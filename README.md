@@ -69,6 +69,7 @@ https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.0.0/picard_i
 
 ### 7. HISAT2 directory
 Mapping summary of samples from each lane produced by the HISAT2 program. 
+https://ccb.jhu.edu/software/hisat2/manual.shtml
 
 ### 8. MarkDuplicates directory
 Metrics file indicating the numbers of duplicates produced by the Picard MarkDuplicates program.
