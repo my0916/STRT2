@@ -1,7 +1,7 @@
 # STRT2
 ```Usage: ${PROGNAME} [-o String] [-g genome (required)] [-t transcriptome] [-b Path (required)] [-i Path (required)] [-c String] [-r String] [-s String]
 
-'Options:
+Options:
   -o, --out               Output file name. (default: output)
   -g, --genome            Genome (hg19/hg38/mm9/mm10/canFam3) for annotation and QC. Required!
   -t, --trans             Transcriptome (ref{RefSeq}/ens{ENSEMBL}/known{UCSC known genes}) for annotation and QC. Default : ref. NOTE: no ENSEMBL for hg38&mm10, no known genes for canFam3.  
