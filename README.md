@@ -23,3 +23,8 @@ Options:
   -h, --help              Show usage.
   -v, --version           Show version.
 ```
+
+## Example
+```
+sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111test -g canFam3 -t ens -bc /XXXXX/Data/Intensities/BaseCalls/ -c KI -r ABCDEFGHIJ -i /XXXXX/index/canFam3_ensemblV4_ercc
+```
