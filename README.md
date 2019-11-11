@@ -8,7 +8,7 @@ git clone https://github.com/my0916/STRT2.git
 ```
 
 ## Requirements
-- Illumina BaseCalls file (.bcl)
+- Illumina BaseCalls files (.bcl)
 - HISAT2 index built with a reference genome/transcriptome, ribosomal DNA, and ERCC spike-ins (https://www-s.nist.gov/srmors/certificates/documents/SRM2374_putative_T7_products_NoPolyA_v2.FASTA)
 
 ## Usage
