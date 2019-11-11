@@ -1,5 +1,6 @@
 # STRT2
-```Usage: ${PROGNAME} [-o String] [-g genome (required)] [-t transcriptome] [-b Path (required)] [-i Path (required)] [-c String] [-r String] [-s String]
+```
+Usage: ${PROGNAME} [-o String] [-g genome (required)] [-t transcriptome] [-b Path (required)] [-i Path (required)] [-c String] [-r String] [-s String]
 
 Options:
   -o, --out               Output file name. (default: output)
@@ -11,4 +12,5 @@ Options:
   -r, --run               The barcode of the run. Prefixed to read names. (default: runbarcode)
   -s, --structure         Read structure (default: 8M3S74T6B)
   -h, --help              Show usage.
-  -v, --version           Show version.```
+  -v, --version           Show version.
+  ```
