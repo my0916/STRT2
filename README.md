@@ -1,6 +1,6 @@
 # STRT2
 ```
-Usage: ./STRT2-UPPMAX.sh [-o String] [-g genome (required)] [-t transcriptome] [-b Path (required)] [-i Path (required)] [-c String] [-r String] [-s String]
+Usage: STRT2-UPPMAX.sh [-o String] [-g genome (required)] [-t transcriptome] [-b Path (required)] [-i Path (required)] [-c String] [-r String] [-s String]
 
 Options:
   -o, --out               Output file name. (default: output)
