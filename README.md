@@ -7,6 +7,10 @@ A pipeline for the analysis of STRT2 sequencing outputs from NextSeq.
 git clone https://github.com/my0916/STRT2.git
 ```
 
+## Requirements
+- Illumina basecalls file (.bcl)
+- HISAT2 index built with reference genome/transcriptome, ribosomal DNA, and ERCC spike-ins (https://www-s.nist.gov/srmors/certificates/documents/SRM2374_putative_T7_products_NoPolyA_v2.FASTA)
+
 ## Usage
 ```
 STRT2-UPPMAX.sh [-o String] [-g genome (required)] [-t transcriptome] [-b Path (required)] [-i Path (required)] [-c String] [-r String] [-s String]
