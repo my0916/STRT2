@@ -32,7 +32,7 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111tes
 
 ## Outputs
 Outputs are found in the 'out' directory.
-### {OUTPUT}-summary.txt
+### - {OUTPUT}-summary.txt
 A quality check report for all samples.
 - ```Barcode``` : Sample name. ${OUTPUT_NAME} with numbers (1-48).
 - ```Qualified reads``` : Primary aligned read count.	
@@ -47,5 +47,5 @@ A quality check report for all samples.
 - ```Coding-5end reads``` : Read count aligned the 5′-UTR or 500 bp upstream of coding genes. 
 - ```Coding-5end rate``` : Coding-5end reads / Coding reads.
 
-### {OUTPUT}_byGene-raw-counts.txt
+### - {OUTPUT}_byGene-raw-counts.txt
 Output from featureCounts http://subread.sourceforge.net/
