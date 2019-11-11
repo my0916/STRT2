@@ -32,8 +32,8 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111tes
 
 ## Outputs
 Outputs are found in the 'out' directory.
-### - {OUTPUT}-summary.txt
-A quality check report for all samples.
+### 1. {OUTPUT}-summary.txt
+Quality check report for all samples.
 - ```Barcode``` : Sample name. ${OUTPUT_NAME} with numbers (1-48).
 - ```Qualified reads``` : Primary aligned read count.	
 - ```Total reads``` : Read count without redundant (duplicate) reads.
@@ -47,5 +47,25 @@ A quality check report for all samples.
 - ```Coding-5end reads``` : Read count aligned the 5′-UTR or 500 bp upstream of coding genes. 
 - ```Coding-5end rate``` : Coding-5end reads / Coding reads.
 
-### - {OUTPUT}_byGene-raw-counts.txt
-Output from featureCounts http://subread.sourceforge.net/
+### 2. {OUTPUT}_byGene-raw-counts.txt
+Read count table output from featureCounts. Details are described here: http://subread.sourceforge.net/
+
+### 3. {OUTPUT}_byGene-raw-counts.txt.summary
+Filtering summary from featureCounts. Details are described here: http://subread.sourceforge.net/
+
+### 4. bam directory
+Resulting BAM files including unmapped, non-primary aligned, and duplicated (marked) reads.
+
+### 5. index directory
+Index files of the resulting BAM files in the 'bam' directory.
+
+### 6. ExtractIlluminaBarcodes directory
+Metrics file produced by the Picard ExtractIlluminaBarcodes program.
+https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.0.0/picard_illumina_ExtractIlluminaBarcodes.php
+
+### 7. HISAT2 directory
+Mapping summary of samples from each lane produced by the HISAT2 program. 
+
+### 8. MarkDuplicates directory
+Metrics file indicating the numbers of duplicates produced by the Picard MarkDuplicates program.
+https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_sam_markduplicates_MarkDuplicates.php
