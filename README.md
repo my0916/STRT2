@@ -35,7 +35,7 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111tes
 ```
 
 ## Outputs
-Outputs are found in the 'out' directory. 
+Outputs are found in the 'out' directory.
 Unaligned BAM files generated with Picard IlluminaBasecallsToSam program are in the 'Unaligned_bam' directory.
 
 ### 1. {OUTPUT}-QC-summary.txt
@@ -59,20 +59,20 @@ Read count table output from featureCounts. Details are described here: http://s
 ### 3. {OUTPUT}_byGene-raw-counts.txt.summary
 Filtering summary from featureCounts. Details are described here: http://subread.sourceforge.net/
 
-### 4. Output-bam directory
+### 4. Output-bam
 Resulting BAM files including unmapped, non-primary aligned, and duplicated (marked) reads.
 
-### 5. Index directory
+### 5. Index
 Index files of the resulting BAM files in the 'bam' directory.
 
-### 6. ExtractIlluminaBarcodes directory
+### 6. ExtractIlluminaBarcodes
 Metrics file produced by the Picard ExtractIlluminaBarcodes program.
 https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.0.0/picard_illumina_ExtractIlluminaBarcodes.php
 
-### 7. HISAT2 directory
+### 7. HISAT2
 Mapping summary of samples from each lane produced by the HISAT2 program. 
 https://ccb.jhu.edu/software/hisat2/manual.shtml
 
-### 8. MarkDuplicates directory
+### 8. MarkDuplicates
 Metrics file indicating the numbers of duplicates produced by the Picard MarkDuplicates program.
 https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_sam_markduplicates_MarkDuplicates.php
