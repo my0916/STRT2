@@ -35,7 +35,9 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111tes
 ```
 
 ## Outputs
-Outputs are found in the 'out' directory.
+Outputs are found in the 'out' directory. 
+Unaligned BAM files generated with Picard IlluminaBasecallsToSam program are in the 'Unaligned_bam' directory.
+
 ### 1. {OUTPUT}-QC-summary.txt
 Quality check report for all samples.
 - ```Barcode``` : Sample name. ${OUTPUT_NAME} with numbers (1-48).
@@ -57,10 +59,10 @@ Read count table output from featureCounts. Details are described here: http://s
 ### 3. {OUTPUT}_byGene-raw-counts.txt.summary
 Filtering summary from featureCounts. Details are described here: http://subread.sourceforge.net/
 
-### 4. bam directory
+### 4. Output-bam directory
 Resulting BAM files including unmapped, non-primary aligned, and duplicated (marked) reads.
 
-### 5. index directory
+### 5. Index directory
 Index files of the resulting BAM files in the 'bam' directory.
 
 ### 6. ExtractIlluminaBarcodes directory
