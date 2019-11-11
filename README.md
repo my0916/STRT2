@@ -34,10 +34,10 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111tes
 Outputs are found in the 'out' directory.
 ### ${OUTPUT_NAME}-summary.txt
 This table is a quality check report for all samples.
-- Barcode : Sample name. ${OUTPUT_NAME} with numbers (1-48).
-- Qualified reads : Primary aligned read count.	
-- Total reads : Read count without redundant (duplicate) reads.
-- Redundancy : Qualified reads / Total reads. 
+- ```Barcode``` : Sample name. ${OUTPUT_NAME} with numbers (1-48).
+- ```Qualified reads``` : Primary aligned read count.	
+- ```Total reads``` : Read count without redundant (duplicate) reads.
+- ```Redundancy``` : Qualified reads / Total reads. 
 - Mapped reads : Mapped read count (Total reads without unmapped reads). 
 - Mapping rate : Mapped reads / Total reads. 
 - Spikein reads : Read count mapped to ERCC spike-ins.
