@@ -29,3 +29,21 @@ Options:
 sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111test -g canFam3 -t ens
 -bc /XXXXX/Data/Intensities/BaseCalls/ -c KI -r ABCDEFGHIJ -i /XXXXX/index/canFam3_ensemblV4_ercc
 ```
+
+## Outputs
+Outputs are found in the 'out' directory.
+### ${OUTPUT_NAME}-summary.txt
+This table is a quality check report for all samples.
+- Barcode : Sample name. ${OUTPUT_NAME} with numbers (1-48).
+- Qualified reads : Primary aligned read count.	
+- Total reads : Read count without redundant (duplicate) reads.
+- Redundancy : Qualified reads / Total reads. 
+- Mapped reads : Mapped read count (Total reads without unmapped reads). 
+- Mapping rate : Mapped reads / Total reads. 
+- Spikein reads : Read count mapped to ERCC spike-ins.
+- Spikein-5end reads: Read count mapped to the 5'-end 50 nt region of ERCC spike-ins.
+- Spikein-5end rate : Spikein-5end reads / Spikein reads.
+- Coding reads : Read count aligned within any exon or the 500 bp upstream of coding genes.
+- Coding-5end reads : Read count aligned the 5′-UTR or 500 bp upstream of coding genes. 
+- Coding-5end rate : Coding-5end reads / Coding reads.
+
