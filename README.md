@@ -1,6 +1,15 @@
-# STRT2
+# STRT2-NextSeq analysis pipeline
+
+A pipeline for the analysis of STRT2 sequencing outputs from NextSeq.   
+
+## Install
 ```
-Usage: STRT2-UPPMAX.sh [-o String] [-g genome (required)] [-t transcriptome] [-b Path (required)] [-i Path (required)] [-c String] [-r String] [-s String]
+git clone https://github.com/my0916/STRT2.git
+```
+
+## Usage
+```
+STRT2-UPPMAX.sh [-o String] [-g genome (required)] [-t transcriptome] [-b Path (required)] [-i Path (required)] [-c String] [-r String] [-s String]
 
 Options:
   -o, --out               Output file name. (default: output)
@@ -13,4 +22,4 @@ Options:
   -s, --structure         Read structure (default: 8M3S74T6B)
   -h, --help              Show usage.
   -v, --version           Show version.
-  ```
+```
