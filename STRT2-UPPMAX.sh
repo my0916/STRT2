@@ -179,7 +179,16 @@ module load subread/1.5.2
 module load ruby/2.6.2
 
 #Preparation for annotation and QC
-if [[ ${ANNO_VALUE} =  "ens" ]]; then
+if [[ ${GENOME_VALUE} = "hg38" ]] && [[ ${ANNO_VALUE} =  "ens" ]]; then
+echo "No Ensembl gene annotations!! Please use RefSeq or KnownGenes for hg38"
+exit 1
+elif [[ ${GENOME_VALUE} = "mm10" ]] && [[ ${ANNO_VALUE} =  "ens" ]]; then
+echo "No Ensembl gene annotations!! Please use RefSeq or KnownGenes for mm10"
+exit 1
+elif [[ ${GENOME_VALUE} = "canFam3" ]] && [[ ${ANNO_VALUE} =  "kg" ]]; then
+echo "No KnownGenes annotations!! Please use RefSeq or Ensembl for canFam3"
+exit 1
+elif [[ ${ANNO_VALUE} =  "ens" ]]; then
 echo "downloading the Ensembl annotation data..."
 curl -o src/ensGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/ensGene.txt.gz
 curl -o src/ensemblToGeneName.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/ensemblToGeneName.txt.gz
