@@ -62,10 +62,10 @@ Read count table output from featureCounts. Details are described here: http://s
 ### 3. `OUTPUT`_byGene-raw-counts.txt.summary
 Filtering summary from featureCounts. Details are described here: http://subread.sourceforge.net/
 
-### 4. Output-bam
+### 4. Output_bam
 Resulting BAM files including unmapped, non-primary aligned, and duplicated (marked) reads.
 
-### 5. Output-bai
+### 5. Output_bai
 Index files (.bai) of the resulting BAM files in the 'bam' directory.
 
 ### 6. ExtractIlluminaBarcodes_Metrics
