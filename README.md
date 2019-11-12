@@ -19,13 +19,13 @@ git clone https://github.com/my0916/STRT2.git
 STRT2-UPPMAX.sh [-o String] [-g genome (required)] [-t transcriptome] [-b Path (required)] [-i Path (required)] [-c String] [-r String] [-s String]
 
 Options:
-  -o, --out               Output file name. (default: output)
+  -o, --out               Output file name. (default: OUTPUT)
   -g, --genome            Genome (hg19/hg38/mm9/mm10/canFam3) for annotation and QC. Required!
   -t, --transcriptome     Transcriptome (ref{RefSeq}/ens{ENSEMBL}/known{UCSC known genes}) for annotation and QC. Default : ref. NOTE: no ENSEMBL for hg38&mm10, no known genes for canFam3.  
   -b, --basecalls         /PATH/to/the Illumina basecalls directory. Required!
   -i, --index             /PATH/to/the directory and basename of the HISAT2 index for the reference genome. Required! 
-  -c, --center            The name of the sequencing center that produced the reads. (default: center)
-  -r, --run               The barcode of the run. Prefixed to read names. (default: runbarcode)
+  -c, --center            The name of the sequencing center that produced the reads. (default: CENTER)
+  -r, --run               The barcode of the run. Prefixed to read names. (default: RUNBARCODE)
   -s, --structure         Read structure (default: 8M3S74T6B)
   -h, --help              Show usage.
   -v, --version           Show version.
@@ -43,7 +43,7 @@ Unaligned BAM files generated with Picard IlluminaBasecallsToSam program are in 
 
 ### 1. `OUTPUT`-QC-summary.txt
 Quality check report for all samples.
-- `Barcode` : Sample name. {OUTPUT} with numbers (1-48).
+- `Barcode` : Sample name. `OUTPUT` with numbers (1-48).
 - `Qualified reads`: Primary aligned read count.	
 - `Total reads` : Read count without redundant (duplicate) reads.
 - `Redundancy` : Qualified reads / Total reads. 
