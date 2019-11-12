@@ -10,7 +10,7 @@ git clone https://github.com/my0916/STRT2.git
 ## Requirements
 - Illumina BaseCalls files (.bcl)
 - HISAT2 index built with a reference genome/transcriptome, ribosomal DNA, and ERCC spike-ins (https://www-s.nist.gov/srmors/certificates/documents/SRM2374_putative_T7_products_NoPolyA_v2.FASTA)
-- Source files (src)
+- Source files (in `src` directory)
   - `barcode.txt` : Barcode sequence with barcode name (1-48).
   - `ERCC.bed` : 5'-end 50 nt region of ERCC spike-ins for annotation and quality check.
 
@@ -38,7 +38,7 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111tes
 ```
 
 ## Outputs
-Outputs are provided in the `out` directory.
+Outputs are provided in `out` directory.
 Unaligned BAM files generated with Picard IlluminaBasecallsToSam program are found in `tmp/Unaligned_bam`.
 
 ### 1. `OUTPUT`-QC-summary.txt
