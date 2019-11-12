@@ -33,6 +33,7 @@ Options:
 
 ### Options in detail
 - `-g, --genome`, `-t, --transcriptome` : Please note that ENSEMBL and UCSC known genes are not available in some cases.
+
 | | RefSeq (ref) | ENSEMBL (ens) | UCSC known genes (known) |
 | :---: | :---: | :---: | :---: |
 | hg19  (human) | TD | TD | TD |
