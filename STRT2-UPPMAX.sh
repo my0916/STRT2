@@ -227,11 +227,8 @@ echo "downloading the chromosome size data..."
 curl -o src/${GENOME_VALUE}.chrom.sizes http://hgdownload.soe.ucsc.edu/goldenPath/${GENOME_VALUE}/bigZips/${GENOME_VALUE}.chrom.sizes
 cat src/${GENOME_VALUE}.chrom.sizes | awk '{print $1"\t"1"\t"$2}' | sortBed -i > src/chrom.size.bed
 cat src/proxup.bed | grep -v _alt  | grep -v _hap | grep -v _fix | grep -v _random | grep -v chrUn | sortBed -i stdin | intersectBed -a stdin -b src/chrom.size.bed > src/proxup_trimmed.bed
-
 cat src/5utr.bed src/proxup_trimmed.bed | grep -v _alt | grep -v _hap | grep -v _fix | grep -v _random | grep -v chrUn | sortBed -i stdin | mergeBed -s -o distinct,distinct,distinct -c 4,5,6 -i - | grep -v , > src/coding_5end.bed
-
 cat src/exon.bed src/proxup_trimmed.bed | grep -v _alt | grep -v _hap | grep -v _fix | grep -v _random | grep -v chrUn | sortBed -i stdin | mergeBed -s -o distinct,distinct,distinct -c 4,5,6 -i - > src/coding.bed
-
 cat src/ERCC.bed src/coding_5end.bed | awk '{print $4 "\t" $1 "\t" $2+1 "\t" $3 "\t" $6}' > src/5end-regions.saf
 
 rm src/${GENOME_VALUE}.chrom.sizes
@@ -350,7 +347,7 @@ rm -rf tmp/merged
 cd out
 
 echo -e Barcode"\t"Qualified reads"\t"Total reads"\t"Redundancy"\t"Mapped reads"\t"Mapping rate\
-"\t"Spikein reads"\t"Spikein-5end reads"\t"Spikein-5end rate"\t"Coding reads"\t"Coding-5end reads"\t"Coding-5end rate > ${OUTPUT_NAME}-QC-summary.txt
+"\t"Spikein reads"\t"Spikein-5end reads"\t"Spikein-5end rate"\t"Coding reads"\t"Coding-5end reads"\t"Coding-5end rate > ${OUTPUT_NAME}-QC.txt
 
 for file in *.output.bam
 do
@@ -367,11 +364,11 @@ spikein_5end_rate=$(echo "scale=1;$spikein_5end_reads*100/$Spike" | bc)
 coding_reads=$(samtools view -u -F 256 -F 1024 -F 4 $file | intersectBed -abam stdin -wa -bed -b ../src/coding.bed | cut -f 4 | sort -u | wc -l)
 coding_5end_reads=$(samtools view -u -F 256 -F 1024 -F 4 $file | intersectBed -abam stdin -wa -bed -b ../src/coding_5end.bed | cut -f 4 | sort -u | wc -l)
 coding_5end_rate=$(echo "scale=1;$coding_5end_reads*100/$coding_reads" | bc)
-echo -e $name"\t"$QR"\t"$Total"\t"$Redundancy"\t"$Map"\t"$Rate"\t"$Spike"\t"$spikein_5end_reads"\t"$spikein_5end_rate"\t"$coding_reads"\t"$coding_5end_reads"\t"$coding_5end_rate >> ${OUTPUT_NAME}-QC-summary.txt
+echo -e $name"\t"$QR"\t"$Total"\t"$Redundancy"\t"$Map"\t"$Rate"\t"$Spike"\t"$spikein_5end_reads"\t"$spikein_5end_rate"\t"$coding_reads"\t"$coding_5end_reads"\t"$coding_5end_rate >> ${OUTPUT_NAME}-QC.txt
 done
 
 #Counting by featureCounts
-featureCounts -T 8 -s 1 --largestOverlap --ignoreDup --primary -a ../src/5end-regions.saf -F SAF -o ${OUTPUT_NAME}_byGene_raw-counts.txt *.bam
+featureCounts -T 8 -s 1 --largestOverlap --ignoreDup --primary -a ../src/5end-regions.saf -F SAF -o ${OUTPUT_NAME}_byGene-counts.txt *.bam
 
 mkdir Output_bai && mv *.bam.bai Output_bai
 mkdir Output_bam && mv *.bam Output_bam
