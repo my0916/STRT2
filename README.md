@@ -65,17 +65,17 @@ Filtering summary from featureCounts. Details are described here: http://subread
 ### 4. Output-bam
 Resulting BAM files including unmapped, non-primary aligned, and duplicated (marked) reads.
 
-### 5. Index
-Index files of the resulting BAM files in the 'bam' directory.
+### 5. Output-bai
+Index files (.bai) of the resulting BAM files in the 'bam' directory.
 
-### 6. ExtractIlluminaBarcodes
+### 6. ExtractIlluminaBarcodes_Metrics
 Metrics file produced by the Picard ExtractIlluminaBarcodes program.
 https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.0.0/picard_illumina_ExtractIlluminaBarcodes.php
 
-### 7. HISAT2
+### 7. HISAT2_Metrics
 Mapping summary of samples from each lane produced by the HISAT2 program. 
 https://ccb.jhu.edu/software/hisat2/manual.shtml
 
-### 8. MarkDuplicates
+### 8. MarkDuplicates_Metrics
 Metrics file indicating the numbers of duplicates produced by the Picard MarkDuplicates program.
 https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_sam_markduplicates_MarkDuplicates.php
