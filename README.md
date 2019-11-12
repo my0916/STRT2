@@ -43,7 +43,7 @@ Unaligned BAM files generated with Picard IlluminaBasecallsToSam program are in 
 
 ### 1. {OUTPUT}-QC-summary.txt
 Quality check report for all samples.
-- ```Barcode``` : Sample name. ${OUTPUT_NAME} with numbers (1-48).
+- ```Barcode``` : Sample name. {OUTPUT} with numbers (1-48).
 - ```Qualified reads``` : Primary aligned read count.	
 - ```Total reads``` : Read count without redundant (duplicate) reads.
 - ```Redundancy``` : Qualified reads / Total reads. 
