@@ -10,6 +10,9 @@ git clone https://github.com/my0916/STRT2.git
 ## Requirements
 - Illumina BaseCalls files (.bcl)
 - HISAT2 index built with a reference genome/transcriptome, ribosomal DNA, and ERCC spike-ins (https://www-s.nist.gov/srmors/certificates/documents/SRM2374_putative_T7_products_NoPolyA_v2.FASTA)
+- Source files (src)
+  - ```barcode.txt``` : Barcode sequence with barcode name (1-48).
+  - ```ERCC.bed``` : 5'-end 50 nt region of ERCC spike-ins for annotation and quality check.
 
 ## Usage
 ```
