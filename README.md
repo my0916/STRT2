@@ -16,12 +16,12 @@ git clone https://github.com/my0916/STRT2.git
 
 ## Usage
 ```
-STRT2-UPPMAX.sh [-o String] [-g genome (required)] [-t transcriptome] [-b Path (required)] [-i Path (required)] [-c String] [-r String] [-s String]
+STRT2-UPPMAX.sh [-o <output>] [-g <genome (required)>] [-a <annotation>] [-b <path (required)>] [-i <path (required)>]
 
 Options:
   -o, --out               Output file name. (default: OUTPUT)
   -g, --genome            Genome (hg19/hg38/mm9/mm10/canFam3) for annotation and QC. Required!
-  -t, --transcriptome     Transcriptome (ref{RefSeq}/ens{ENSEMBL}/known{UCSC known genes}) for annotation and QC. Default : ref. NOTE: no ENSEMBL for hg38&mm10, no known genes for canFam3.  
+  -a, --annotation        Gene annotation (ref{RefSeq}/ens{Ensembl}/kg{UCSC KnownGenes}) for QC and counting. Default : ref. NOTE: no Ensembl for hg38&mm10, no KnownGenes for canFam3. 
   -b, --basecalls         /PATH/to/the Illumina basecalls directory. Required!
   -i, --index             /PATH/to/the directory and basename of the HISAT2 index for the reference genome. Required! 
   -c, --center            The name of the sequencing center that produced the reads. (default: CENTER)
@@ -32,19 +32,19 @@ Options:
 ```
 
 ### Options in detail
-- `-g, --genome`, `-t, --transcriptome` : Please note that ENSEMBL and UCSC known genes are not available in some cases.
+- `-g, --genome`, `-a, --annotation` : Please note that Ensembl and UCSC KnownGenes are not available in some cases.
 
-  | | RefSeq (ref) | ENSEMBL (ens) | UCSC known genes (known) |
+  | | RefSeq (ref) | Ensembl (ens) | UCSC KnownGenes (kg) |
   | :---: | :---: | :---: | :---: |
-  | hg19 (human) | TD | TD | TD |
-  | hg38 (human) | TD | TD | TD |
+  | hg19 (human) | :heavy_check_mark: | TD | TD |
+  | hg38 (human) | TD | NA | TD |
   | mm9 (mouse) | TD | TD | TD |
-  | mm10 (mouse) | TD | TD | TD |
-  | canFam3 (dog) | TD | TD | TD |
+  | mm10 (mouse) | TD | NA | TD |
+  | canFam3 (dog) | TD | TD | NA |
 
 ## Example
 ```
-sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111test -g canFam3 -t ens
+sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111test -g canFam3 -a ens
 -b /XXXXX/Data/Intensities/BaseCalls/ -c HUDDINGE -r ABCDEFG123 -i /XXXXX/index/canFam3_ensemblV4_ercc
 ```
 
