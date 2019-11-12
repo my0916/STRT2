@@ -66,7 +66,7 @@ Filtering summary from featureCounts. Details are described here: http://subread
 Resulting BAM files including unmapped, non-primary aligned, and duplicated (marked) reads.
 
 ### 5. Output_bai
-Index files (.bai) of the resulting BAM files in the 'bam' directory.
+Index files (.bai) of the resulting BAM files in the `Output_bam` directory.
 
 ### 6. ExtractIlluminaBarcodes_Metrics
 Metrics file produced by the Picard ExtractIlluminaBarcodes program.
