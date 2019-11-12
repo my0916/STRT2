@@ -20,7 +20,7 @@ STRT2-UPPMAX.sh [-o <output>] [-g <genome (required)>] [-a <annotation>] [-b <pa
 
 Options:
   -o, --out               Output file name. (default: OUTPUT)
-  -g, --genome            Genome (hg19/hg38/mm9/mm10/canFam3) for annotation and QC. Required!
+  -g, --genome            Genome (hg19/hg38/mm9/mm10/canFam3). Required!
   -a, --annotation        Gene annotation (ref{RefSeq}/ens{Ensembl}/kg{UCSC KnownGenes}) for QC and counting. Default : ref. NOTE: no Ensembl for hg38&mm10, no KnownGenes for canFam3. 
   -b, --basecalls         /PATH/to/the Illumina basecalls directory. Required!
   -i, --index             /PATH/to/the directory and basename of the HISAT2 index for the reference genome/transcriptome. Required! 
