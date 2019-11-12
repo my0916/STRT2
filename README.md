@@ -23,7 +23,7 @@ Options:
   -g, --genome            Genome (hg19/hg38/mm9/mm10/canFam3) for annotation and QC. Required!
   -a, --annotation        Gene annotation (ref{RefSeq}/ens{Ensembl}/kg{UCSC KnownGenes}) for QC and counting. Default : ref. NOTE: no Ensembl for hg38&mm10, no KnownGenes for canFam3. 
   -b, --basecalls         /PATH/to/the Illumina basecalls directory. Required!
-  -i, --index             /PATH/to/the directory and basename of the HISAT2 index for the reference genome. Required! 
+  -i, --index             /PATH/to/the directory and basename of the HISAT2 index for the reference genome/transcriptome. Required! 
   -c, --center            The name of the sequencing center that produced the reads. (default: CENTER)
   -r, --run               The barcode of the run. Prefixed to read names. (default: RUNBARCODE)
   -s, --structure         Read structure (default: 8M3S74T6B)
@@ -34,13 +34,17 @@ Options:
 ### Options in detail
 - `-g, --genome`, `-a, --annotation` : Please note that Ensembl and UCSC KnownGenes are not available in some cases.
 
-  | | RefSeq (ref) | Ensembl (ens) | UCSC KnownGenes (kg) |
-  | :---: | :---: | :---: | :---: |
-  | hg19 (human) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-  | hg38 (human) | :heavy_check_mark: | NA | :heavy_check_mark: |
-  | mm9 (mouse) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-  | mm10 (mouse) | :heavy_check_mark: | NA | :heavy_check_mark: |
-  | canFam3 (dog) | :heavy_check_mark: | :heavy_check_mark: | NA |
+   | | RefSeq (ref) | Ensembl (ens) | UCSC KnownGenes (kg) |
+   | :---: | :---: | :---: | :---: |
+   | hg19 (human) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+   | hg38 (human) | :heavy_check_mark: | NA | :heavy_check_mark: |
+   | mm9 (mouse) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+   | mm10 (mouse) | :heavy_check_mark: | NA | :heavy_check_mark: |
+   | canFam3 (dog) | :heavy_check_mark: | :heavy_check_mark: | NA |
+   
+- `-c, --center`, `-r, --run` : Required for the the Picard IlluminaBasecallsToSam program.
+- `-s, --structure` : Required for the the Picard IlluminaBasecallsToSam program. Detais are described here:
+https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_illumina_IlluminaBasecallsToSam.php#--READ_STRUCTURE
 
 ## Example
 ```
