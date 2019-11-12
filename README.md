@@ -32,7 +32,14 @@ Options:
 ```
 
 ### Options in detail
-test
+- `-g, --genome`, `-t, --transcriptome` : Please note that ENSEMBL and UCSC known genes are not available in some cases.
+| | RefSeq (ref) | ENSEMBL (ens) | UCSC known genes (known) |
+| :---: | :---: | :---: | :---: |
+| hg19  (human) | TD | TD | TD |
+| hg38  (human) | TD | TD | TD |
+| mm9 | TD | TD | TD |
+| mm10 | TD | TD | TD |
+| canFam3 | TD | TD | TD |
 
 ## Example
 ```
