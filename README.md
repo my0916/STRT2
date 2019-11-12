@@ -36,11 +36,11 @@ Options:
 
   | | RefSeq (ref) | Ensembl (ens) | UCSC KnownGenes (kg) |
   | :---: | :---: | :---: | :---: |
-  | hg19 (human) | :heavy_check_mark: | TD | TD |
-  | hg38 (human) | TD | NA | TD |
-  | mm9 (mouse) | TD | TD | TD |
-  | mm10 (mouse) | TD | NA | TD |
-  | canFam3 (dog) | TD | TD | NA |
+  | hg19 (human) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+  | hg38 (human) | :heavy_check_mark: | NA | :heavy_check_mark: |
+  | mm9 (mouse) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+  | mm10 (mouse) | :heavy_check_mark: | NA | :heavy_check_mark: |
+  | canFam3 (dog) | :heavy_check_mark: | :heavy_check_mark: | NA |
 
 ## Example
 ```
