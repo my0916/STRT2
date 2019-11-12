@@ -56,7 +56,7 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111tes
 Outputs are provided in `out` directory.
 Unaligned BAM files generated with Picard IlluminaBasecallsToSam program are found in `tmp/Unaligned_bam`.
 
-### 1. `OUTPUT`-QC-summary.txt
+### 1. `OUTPUT`-QC.txt
 Quality check report for all samples.
 - `Barcode` : Sample name. `OUTPUT` with numbers (1-48).
 - `Qualified reads`: Primary aligned read count.	
