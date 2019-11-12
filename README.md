@@ -32,7 +32,7 @@ Options:
 ```
 
 ### Options in detail
-- `-g, --genome`, `-a, --annotation` : Please note that Ensembl and UCSC KnownGenes are not available in some cases.
+- `-g, --genome`, `-a, --annotation` : Note that Ensembl and UCSC KnownGenes are not available in some cases.
 
    | | RefSeq (ref) | Ensembl (ens) | UCSC KnownGenes (kg) |
    | :---: | :---: | :---: | :---: |
