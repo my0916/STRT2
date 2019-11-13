@@ -56,8 +56,8 @@ https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_i
 
 ## Example
 ```
-./STRT2.sh -o 191111test -g canFam3 -a ens
--b /XXXXX/Data/Intensities/BaseCalls/ -c HUDDINGE -r ABCDEFG123 -i /XXXXX/index/canFam3_ensemblV4_ercc
+./STRT2.sh -o 191111test -g canFam3 -a ens -b /XXXXX/Data/Intensities/BaseCalls/ 
+-c HUDDINGE -r ABCDEFG123 -i /XXXXX/index/canFam3_ensemblV4_ercc
 ```
 ```
 sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111test -g canFam3 -a ens
