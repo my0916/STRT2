@@ -60,6 +60,7 @@ Options:
   -v, --version           Show version.
 
   - `-a, --annotation`
+  
    | | RefSeq (ref) | Ensembl (ens) | KnownGenes (kg) |
    | :---: | :---: | :---: | :---: |
    | hg19 (human) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
