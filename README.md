@@ -16,11 +16,11 @@ For STRT2.sh
 
 ## Requirements
 - Illumina BaseCalls files (.bcl)
-- HISAT2 index built with a reference genome, (ribosomal DNA), and ERCC spike-ins ([SRM2374](https://www-s.nist.gov/srmors/view_detail.cfm?srm=2374))
+- HISAT2 index built with a reference genome, (ribosomal DNA), and ERCC spike-ins 
   - See also [How to build HISAT2 index](#How-to-build-HISAT2-index).
 - Source files (in `src` directory)
   - `barcode.txt` : Barcode sequence with barcode name (1-48).
-  - `ERCC.bed` : 5'-end 50 nt region of ERCC spike-ins for annotation and quality check.
+  - `ERCC.bed` : 5'-end 50 nt region of ERCC spike-ins ([SRM2374](https://www-s.nist.gov/srmors/view_detail.cfm?srm=2374)) for annotation and quality check.
 
 ## Example usage
 ```
