@@ -9,7 +9,7 @@ git clone https://github.com/my0916/STRT2.git
 
 ## Requirements
 - Illumina BaseCalls files (.bcl)
-- HISAT2 index built with a reference genome/transcriptome, (ribosomal DNA), and ERCC spike-ins (https://www-s.nist.gov/srmors/certificates/documents/SRM2374_putative_T7_products_NoPolyA_v2.FASTA)
+- HISAT2 index built with a reference genome, (ribosomal DNA), and ERCC spike-ins (https://www-s.nist.gov/srmors/certificates/documents/SRM2374_putative_T7_products_NoPolyA_v2.FASTA)
 - Source files (in `src` directory)
   - `barcode.txt` : Barcode sequence with barcode name (1-48).
   - `ERCC.bed` : 5'-end 50 nt region of ERCC spike-ins for annotation and quality check.
@@ -23,7 +23,7 @@ Options:
   -g, --genome            Genome (hg19/hg38/mm9/mm10/canFam3). Required!
   -a, --annotation        Gene annotation (ref{RefSeq}/ens{Ensembl}/kg{UCSC KnownGenes}) for QC and counting. Default : ref. NOTE: no Ensembl for hg38&mm10, no KnownGenes for canFam3. 
   -b, --basecalls         /PATH/to/the Illumina basecalls directory. Required!
-  -i, --index             /PATH/to/the directory and basename of the HISAT2 index for the reference genome/transcriptome. Required! 
+  -i, --index             /PATH/to/the directory and basename of the HISAT2 index for the reference genome. Required!
   -c, --center            The name of the sequencing center that produced the reads. (default: CENTER)
   -r, --run               The barcode of the run. Prefixed to read names. (default: RUNBARCODE)
   -s, --structure         Read structure (default: 8M3S74T6B)
@@ -88,8 +88,8 @@ Metrics file produced by the Picard ExtractIlluminaBarcodes program.
 https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.0.0/picard_illumina_ExtractIlluminaBarcodes.php
 
 ### 7. HISAT2_Metrics
-Mapping summary of samples from each lane produced by the HISAT2 program. 
-https://ccb.jhu.edu/software/hisat2/manual.shtml
+Alignment summary of samples from each lane produced by the HISAT2 program. 
+https://ccb.jhu.edu/software/hisat2/manual.shtml#alignment-summary
 
 ### 8. MarkDuplicates_Metrics
 Metrics file indicating the numbers of duplicates produced by the Picard MarkDuplicates program.
