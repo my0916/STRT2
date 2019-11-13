@@ -8,15 +8,15 @@ git clone https://github.com/my0916/STRT2.git
 ```
 ## Dependencies
 For STRT2.sh
-- [Picard](https://broadinstitute.github.io/picard/) 
-- [HISAT2](https://ccb.jhu.edu/software/hisat2/index.shtml)
-- [SAMtools](http://samtools.sourceforge.net/)
-- [bedtools](https://bedtools.readthedocs.io/en/latest/)
-- [Subread](http://subread.sourceforge.net/)
+- [Picard](https://broadinstitute.github.io/picard/){:target="_blank"} 
+- [HISAT2](https://ccb.jhu.edu/software/hisat2/index.shtml){:target="_blank"}
+- [SAMtools](http://samtools.sourceforge.net/){:target="_blank"}
+- [bedtools](https://bedtools.readthedocs.io/en/latest/){:target="_blank"}
+- [Subread](http://subread.sourceforge.net/){:target="_blank"}
 
 ## Requirements
 - Illumina BaseCalls files (.bcl)
-- HISAT2 index built with a reference genome, (ribosomal DNA), and [ERCC spike-ins](https://www-s.nist.gov/srmors/certificates/documents/SRM2374_putative_T7_products_NoPolyA_v2.FASTA)
+- HISAT2 index built with a reference genome, (ribosomal DNA), and [ERCC spike-ins](https://www-s.nist.gov/srmors/certificates/documents/SRM2374_putative_T7_products_NoPolyA_v2.FASTA){:target="_blank"}
   - See also [How to build HISAT2 index](#How-to-build-HISAT2-index).
 - Source files (in `src` directory)
   - `barcode.txt` : Barcode sequence with barcode name (1-48).
