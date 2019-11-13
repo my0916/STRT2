@@ -71,18 +71,20 @@ Unaligned BAM files generated with Picard IlluminaBasecallsToSam program are fou
 ### 1. `OUTPUT`-QC.txt
 
 Quality check report for all samples.
-  - `Barcode` : Sample name. `OUTPUT` with numbers (1-48).
-  - `Qualified reads`: Primary aligned read count.	
-  - `Total reads` : Read count without redundant (duplicate) reads.
-  - `Redundancy` : Qualified reads / Total reads. 
-  - `Mapped reads` : Mapped read count (Total reads without unmapped reads). 
-  - `Mapping rate` : Mapped reads / Total reads. 
-  - `Spikein reads` : Read count mapped to ERCC spike-ins.
-  - `Spikein-5end reads` : Read count mapped to the 5'-end 50 nt region of ERCC spike-ins.
-  - `Spikein-5end rate` : Spikein-5end reads / Spikein reads.
-  - `Coding reads` : Read count aligned within any exon or the 500 bp upstream of coding genes.
-  - `Coding-5end reads` : Read count aligned the 5′-UTR or 500 bp upstream of coding genes. 
-  - `Coding-5end rate` : Coding-5end reads / Coding reads.
+    |Column|Value|
+    | --- | --- |
+    |`Barcode` | Sample name. `OUTPUT` with numbers (1-48)|
+    |`Qualified reads` | Primary aligned read count|	
+    |`Total reads`| Read count without redundant (duplicate) reads|
+    |`Redundancy` | Qualified reads / Total reads| 
+    |`Mapped reads` | Mapped read count (Total reads without unmapped reads)|
+    |`Mapping rate` | Mapped reads / Total reads|  
+    |`Spikein reads` | Read count mapped to ERCC spike-ins|
+    |`Spikein-5end reads` | Read count mapped to the 5'-end 50 nt region of ERCC spike-ins|
+    |`Spikein-5end rate` | Spikein-5end reads / Spikein reads|
+    |`Coding reads` | Read count aligned within any exon or the 500 bp upstream of coding genes|
+    |`Coding-5end reads` | Read count aligned the 5′-UTR or 500 bp upstream of coding genes| 
+    |`Coding-5end rate` | Coding-5end reads / Coding reads|
 
 ### 2. `OUTPUT`_byGene-counts.txt
 
