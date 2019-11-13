@@ -22,13 +22,15 @@ For STRT2.sh
   - `barcode.txt` : Barcode sequence with barcode name (1-48).
   - `ERCC.bed` : 5'-end 50 nt region of ERCC spike-ins for annotation and quality check.
 
-## Usage
+## Example usage
 ```
-STRT2.sh [-o <output>] [-g <genome>] [-a <annotation>] [-b </PATH/to/basecalls>] [-i </PATH/to/index>]
+./STRT2.sh -o 191111test -g canFam3 -a ens -b /XXXXX/Data/Intensities/BaseCalls/ \
+-c HUDDINGE -r ABCDEFG123 -i /XXXXX/index/canFam3_ensemblV4_ercc
 ```
 For UPPMAX:
 ```
-STRT2-UPPMAX.sh [-o <output>] [-g <genome>] [-a <annotation>] [-b </PATH/to/basecalls>] [-i </PATH/to/index>]
+sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111test -g canFam3 -a ens \
+-b /XXXXX/Data/Intensities/BaseCalls/ -c HUDDINGE -r ABCDEFG123 -i /XXXXX/index/canFam3_ensemblV4_ercc
 ```
 
 ## Parameters
@@ -45,7 +47,7 @@ STRT2-UPPMAX.sh [-o <output>] [-g <genome>] [-a <annotation>] [-b </PATH/to/base
    | Name | Default value | Description |
    | :--- | :--- | :--- |
    | `-o, --out` | OUTPUT | Output file name.|
-   | `-a, --annotation` | ref | Gene annotation for QC and counting. Choose from `ref`(RefSeq)/`ens`(Ensembl)/`kg`(UCSC KnownGenes). <br>Please note that Ensembl and UCSC KnownGenes are not available in some cases.|
+   | `-a, --annotation` | ref | Gene annotation for QC and counting. <br> Choose from `ref`(RefSeq)/`ens`(Ensembl)/`kg`(UCSC KnownGenes). <br>Note that Ensembl and UCSC KnownGenes are not available in some cases.|
   
 Options:
   -a, --annotation        Gene annotation (ref{RefSeq}/ens{Ensembl}/kg{UCSC KnownGenes}) for QC and counting. Default : ref. NOTE: no Ensembl for hg38&mm10, no KnownGenes for canFam3. 
@@ -72,17 +74,6 @@ Options:
 - `-c, --center`, `-r, --run` : Required for the the Picard IlluminaBasecallsToSam program.
 - `-s, --structure` : Required for the the Picard IlluminaBasecallsToSam program. Detais are described here:
 https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_illumina_IlluminaBasecallsToSam.php#--READ_STRUCTURE
-
-## Example
-```
-./STRT2.sh -o 191111test -g canFam3 -a ens -b /XXXXX/Data/Intensities/BaseCalls/ \
--c HUDDINGE -r ABCDEFG123 -i /XXXXX/index/canFam3_ensemblV4_ercc
-```
-For UPPMAX:
-```
-sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111test -g canFam3 -a ens \
--b /XXXXX/Data/Intensities/BaseCalls/ -c HUDDINGE -r ABCDEFG123 -i /XXXXX/index/canFam3_ensemblV4_ercc
-```
 
 ## Outputs
 Outputs are provided in `out` directory.
