@@ -71,6 +71,7 @@ Unaligned BAM files generated with Picard IlluminaBasecallsToSam program are fou
 ### 1. `OUTPUT`-QC.txt
 
 Quality check report for all samples.
+
     |Column|Value|
     | --- | --- |
     |`Barcode` | Sample name. `OUTPUT` with numbers (1-48)|
