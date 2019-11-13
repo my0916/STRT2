@@ -69,6 +69,7 @@ Outputs are provided in `out` directory.
 Unaligned BAM files generated with Picard IlluminaBasecallsToSam program are found in `tmp/Unaligned_bam`.
 
 - __`OUTPUT`-QC.txt__
+
 Quality check report for all samples.
   - `Barcode` : Sample name. `OUTPUT` with numbers (1-48).
   - `Qualified reads`: Primary aligned read count.	
@@ -84,6 +85,7 @@ Quality check report for all samples.
   - `Coding-5end rate` : Coding-5end reads / Coding reads.
 
 - __`OUTPUT`_byGene-counts.txt__
+
 Read count table output from featureCounts. Details are described here: http://subread.sourceforge.net/
 
 ### 3. `OUTPUT`_byGene-counts.txt.summary
