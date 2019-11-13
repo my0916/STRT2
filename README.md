@@ -54,7 +54,7 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111tes
    | `-h, --help`| | Show usage.|
    | `-v, --version`| | Show version.|
    
-   - `-a, --annotation` 
+   - `-a, --annotation` availability:
    
     | | RefSeq (ref) | Ensembl (ens) | KnownGenes (kg) |
     | :---: | :---: | :---: | :---: |
