@@ -87,10 +87,12 @@ Quality check report for all samples.
    |`Coding-5end rate` | Coding-5end reads / Coding reads|
 
 - __`OUTPUT`\_byGene-counts.txt__ <br>
-Read count table output from featureCounts. Details are described here: http://subread.sourceforge.net/
+Read count table output from featureCounts.
+http://bioinf.wehi.edu.au/subread-package/SubreadUsersGuide.pdf
 
 - __`OUTPUT`\_byGene-counts.txt.summary__ <br>
-Filtering summary from featureCounts. Details are described here: http://subread.sourceforge.net/
+Filtering summary from featureCounts.
+http://bioinf.wehi.edu.au/subread-package/SubreadUsersGuide.pdf
 
 - __Output_bam__ <br>
 Resulting BAM files including unmapped, non-primary aligned, and duplicated (marked) reads.
