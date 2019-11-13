@@ -8,15 +8,15 @@ git clone https://github.com/my0916/STRT2.git
 ```
 ## Dependencies
 For STRT2.sh
-- [Picard](https://broadinstitute.github.io/picard/){:target="_blank"} 
-- [HISAT2](https://ccb.jhu.edu/software/hisat2/index.shtml){:target="_blank"}
-- [SAMtools](http://samtools.sourceforge.net/){:target="_blank"}
-- [bedtools](https://bedtools.readthedocs.io/en/latest/){:target="_blank"}
-- [Subread](http://subread.sourceforge.net/){:target="_blank"}
+- [Picard](https://broadinstitute.github.io/picard/)
+- [HISAT2](https://ccb.jhu.edu/software/hisat2/index.shtml)
+- [SAMtools](http://samtools.sourceforge.net/)
+- [bedtools](https://bedtools.readthedocs.io/en/latest/)
+- [Subread](http://subread.sourceforge.net/)
 
 ## Requirements
 - Illumina BaseCalls files (.bcl)
-- HISAT2 index built with a reference genome, (ribosomal DNA), and [ERCC spike-ins](https://www-s.nist.gov/srmors/certificates/documents/SRM2374_putative_T7_products_NoPolyA_v2.FASTA){:target="_blank"}
+- HISAT2 index built with a reference genome, (ribosomal DNA), and [ERCC spike-ins](https://www-s.nist.gov/srmors/certificates/documents/SRM2374_putative_T7_products_NoPolyA_v2.FASTA)
   - See also [How to build HISAT2 index](#How-to-build-HISAT2-index).
 - Source files (in `src` directory)
   - `barcode.txt` : Barcode sequence with barcode name (1-48).
@@ -47,7 +47,7 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111tes
    | Name | Default value | Description |
    | :--- | :--- | :--- |
    | `-o, --out` | OUTPUT | Output file name.|
-   | `-a, --annotation` | ref | Gene annotation for QC and counting. <br> Choose from `ref`(RefSeq)/`ens`(Ensembl)/`kg`(UCSC KnownGenes). <br>Note that Ensembl and UCSC KnownGenes are not available in some cases. Please find the details [below](#-a,---annotation).
+   | `-a, --annotation` | ref | Gene annotation for QC and counting. <br> Choose from `ref`(RefSeq)/`ens`(Ensembl)/`kg`(UCSC KnownGenes). <br>Note that Ensembl and UCSC KnownGenes are not available in some cases. Please find the details [below](#jump-there).
   
 Options:
   -a, --annotation        Gene annotation (ref{RefSeq}/ens{Ensembl}/kg{UCSC KnownGenes}) for QC and counting. Default : ref. NOTE: no Ensembl for hg38&mm10, no KnownGenes for canFam3. 
@@ -59,7 +59,7 @@ Options:
   -h, --help              Show usage.
   -v, --version           Show version.
 
-  - `-a, --annotation`
+    <a name="jump-there"></a>- `-a, --annotation`
   
    | | RefSeq (ref) | Ensembl (ens) | KnownGenes (kg) |
    | :---: | :---: | :---: | :---: |
