@@ -25,12 +25,12 @@ For STRT2.sh
 ## Example usage
 ```
 ./STRT2.sh -o STRT2LIB -g canFam3 -a ens -b /XXXXX/Data/Intensities/BaseCalls/ \
--c HUDDINGE -r ABCDEFG123 -i /XXXXX/index/canFam3_ensemblV4_ercc
+-i /XXXXX/index/canFam3_ensemblV4_ercc -c HUDDINGE -r ABCDEFG123
 ```
 For UPPMAX:
 ```
 sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o STRT2LIB -g canFam3 -a ens \
--b /XXXXX/Data/Intensities/BaseCalls/ -c HUDDINGE -r ABCDEFG123 -i /XXXXX/index/canFam3_ensemblV4_ercc
+-b /XXXXX/Data/Intensities/BaseCalls/ -i /XXXXX/index/canFam3_ensemblV4_ercc -c HUDDINGE -r ABCDEFG123 
 ```
 
 ## Parameters
