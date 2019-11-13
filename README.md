@@ -111,7 +111,7 @@ https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_s
 ## How to build HISAT2 index
 Here is the case for the dog genome (canFam3).
 ### 1. Obtain the genome sequences of reference and ERCC spike-ins. 
-Add the ribosomal DNA sequence for human (U13369) and mouse (BK000964).
+You may add the ribosomal DNA sequence for human (U13369) and mouse (BK000964).
 ```
 wget http://hgdownload.cse.ucsc.edu/goldenPath/canFam3/bigZips/canFam3.fa.gz
 unpigz -c canFam3.fa.gz | ruby -ne '$ok = $_ !~ /^>chrUn_/ if $_ =~ /^>/; puts $_ if $ok' > canFam3_ercc.fa
@@ -129,4 +129,4 @@ unpigz -c canFam3.transMapEnsemblV4.gtf.gz | hisat2_extract_exons.py - | grep -v
 ```
 hisat2-build canFam3_ercc.fa --ss canFam3.ss --exon canFam3.exon canFam3_ensemblV4_ercc
 ```
-Here 'canFam3_ensemblV4_ercc' is the basename used for `-i, --index`.
+In this case, `canFam3_ensemblV4_ercc` is the basename used for `-i, --index`.
