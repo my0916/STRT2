@@ -45,7 +45,7 @@ STRT2-UPPMAX.sh [-o <output>] [-g <genome>] [-a <annotation>] [-b </PATH/to/base
    | Name | Default value | Description |
    | :--- | :--- | :--- |
    | `-o, --out` | OUTPUT | Output file name.|
-   | `-a, --annotation` | ref | Output file name.|
+   | `-a, --annotation` | ref | Gene annotation for QC and counting. Choose from `ref`(RefSeq)/`ens`(Ensembl)/`kg`(UCSC KnownGenes). <br>Please note that Ensembl and UCSC KnownGenes are not available in some cases.|
   
 Options:
   -a, --annotation        Gene annotation (ref{RefSeq}/ens{Ensembl}/kg{UCSC KnownGenes}) for QC and counting. Default : ref. NOTE: no Ensembl for hg38&mm10, no KnownGenes for canFam3. 
