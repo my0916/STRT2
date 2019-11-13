@@ -59,8 +59,7 @@ Options:
   -h, --help              Show usage.
   -v, --version           Show version.
 
-    <a name="jump-there"></a>
-    - `-a, --annotation`
+    <a name="jump-there"></a> test
   
    | | RefSeq (ref) | Ensembl (ens) | KnownGenes (kg) |
    | :---: | :---: | :---: | :---: |
