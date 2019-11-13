@@ -59,17 +59,15 @@ Options:
   -h, --help              Show usage.
   -v, --version           Show version.
 
-####
--
-  - `-a, --annotation`
+##### `-a, --annotation`
   
-   | | RefSeq (ref) | Ensembl (ens) | KnownGenes (kg) |
-   | :---: | :---: | :---: | :---: |
-   | hg19 (human) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-   | hg38 (human) | :heavy_check_mark: | NA | :heavy_check_mark: |
-   | mm9 (mouse) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-   | mm10 (mouse) | :heavy_check_mark: | NA | :heavy_check_mark: |
-   | canFam3 (dog) | :heavy_check_mark: | :heavy_check_mark: | NA |
+     | | RefSeq (ref) | Ensembl (ens) | KnownGenes (kg) |
+     | :---: | :---: | :---: | :---: |
+     | hg19 (human) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+     | hg38 (human) | :heavy_check_mark: | NA | :heavy_check_mark: |
+     | mm9 (mouse) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+     | mm10 (mouse) | :heavy_check_mark: | NA | :heavy_check_mark: |
+     | canFam3 (dog) | :heavy_check_mark: | :heavy_check_mark: | NA |
    
 - `-c, --center`, `-r, --run` : Required for the the Picard IlluminaBasecallsToSam program.
 - `-s, --structure` : Required for the the Picard IlluminaBasecallsToSam program. Detais are described here:
