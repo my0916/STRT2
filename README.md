@@ -101,7 +101,7 @@ Resulting BAM files including unmapped, non-primary aligned, and duplicated (mar
 Index files (.bai) of the resulting BAM files in the `Output_bam` directory.
 
 - __ExtractIlluminaBarcodes_Metrics__ <br>
-Metrics file produced by the Picard ExtractIlluminaBarcodes program.
+Metrics file produced by the Picard ExtractIlluminaBarcodes program. The number of matches/mismatches between the barcode reads and the actual barcodes is shown per lane.
 https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.0.0/picard_illumina_ExtractIlluminaBarcodes.php
 
 - __HISAT2_Metrics__ <br>
