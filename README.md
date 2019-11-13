@@ -10,7 +10,7 @@ git clone https://github.com/my0916/STRT2.git
 ## Requirements
 - Illumina BaseCalls files (.bcl)
 - HISAT2 index built with a reference genome, (ribosomal DNA), and [ERCC spike-ins](https://www-s.nist.gov/srmors/certificates/documents/SRM2374_putative_T7_products_NoPolyA_v2.FASTA)
-  - See also [How to build HISAT2 index](#Usage)
+  - See also [How to build HISAT2 index](#Usage).
 - Source files (in `src` directory)
   - `barcode.txt` : Barcode sequence with barcode name (1-48).
   - `ERCC.bed` : 5'-end 50 nt region of ERCC spike-ins for annotation and quality check.
@@ -57,7 +57,7 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111tes
 Outputs are provided in `out` directory.
 Unaligned BAM files generated with Picard IlluminaBasecallsToSam program are found in `tmp/Unaligned_bam`.
 
-### 1. `OUTPUT`-QC.txt
+#### 1. `OUTPUT`-QC.txt
 Quality check report for all samples.
 - `Barcode` : Sample name. `OUTPUT` with numbers (1-48).
 - `Qualified reads`: Primary aligned read count.	
@@ -72,10 +72,10 @@ Quality check report for all samples.
 - `Coding-5end reads` : Read count aligned the 5′-UTR or 500 bp upstream of coding genes. 
 - `Coding-5end rate` : Coding-5end reads / Coding reads.
 
-### 2. `OUTPUT`_byGene-counts.txt
+#### 2. `OUTPUT`_byGene-counts.txt
 Read count table output from featureCounts. Details are described here: http://subread.sourceforge.net/
 
-### 3. `OUTPUT`_byGene-counts.txt.summary
+#### 3. `OUTPUT`_byGene-counts.txt.summary
 Filtering summary from featureCounts. Details are described here: http://subread.sourceforge.net/
 
 ### 4. Output_bam
@@ -95,3 +95,6 @@ https://ccb.jhu.edu/software/hisat2/manual.shtml#alignment-summary
 ### 8. MarkDuplicates_Metrics
 Metrics file indicating the numbers of duplicates produced by the Picard MarkDuplicates program.
 https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_sam_markduplicates_MarkDuplicates.php
+
+
+## How to build HISAT2 index
