@@ -4,29 +4,29 @@ PROGNAME="$( basename $0 )"
 
 #Usage
 function usage() {
-cat << EOS >&2
+  cat << EOS >&2
 Usage: ${PROGNAME} [-o <output>] [-g <genome (required)>] [-a <annotation>] [-b <path (required)>] [-i <path (required)>]
 
 Options:
--o, --out               Output file name. (default: OUTPUT)
--g, --genome            Genome (hg19/hg38/mm9/mm10/canFam3). Required!
--a, --annotation        Gene annotation (ref{RefSeq}/ens{Ensembl}/kg{UCSC KnownGenes}) for QC and counting. Default : ref. NOTE: no Ensembl for hg38&mm10, no KnownGenes for canFam3.
--b, --basecalls         /PATH/to/the Illumina basecalls directory. Required!
--i, --index             /PATH/to/the directory and basename of the HISAT2 index for the reference genome. Required!
--c, --center            The name of the sequencing center that produced the reads. (default: CENTER)
--r, --run               The barcode of the run. Prefixed to read names. (default: RUNBARCODE)
--s, --structure         Read structure (default: 8M3S74T6B)
--h, --help              Show usage.
--v, --version           Show version.
+  -o, --out               Output file name. (default: OUTPUT)
+  -g, --genome            Genome (hg19/hg38/mm9/mm10/canFam3). Required!
+  -a, --annotation        Gene annotation (ref{RefSeq}/ens{Ensembl}/kg{UCSC KnownGenes}) for QC and counting. Default : ref. NOTE: no Ensembl for hg38&mm10, no KnownGenes for canFam3.  
+  -b, --basecalls         /PATH/to/the Illumina basecalls directory. Required!
+  -i, --index             /PATH/to/the directory and basename of the HISAT2 index for the reference genome. Required! 
+  -c, --center            The name of the sequencing center that produced the reads. (default: CENTER)
+  -r, --run               The barcode of the run. Prefixed to read names. (default: RUNBARCODE)
+  -s, --structure         Read structure (default: 8M3S74T6B)
+  -h, --help              Show usage.
+  -v, --version           Show version.
 EOS
-exit 1
+  exit 1
 }
 
 function version() {
-cat << EOS >&2
+  cat << EOS >&2
 STRT2-NextSeq-automated-pipeline ver2019.11.11
 EOS
-exit 1
+  exit 1
 }
 
 #Default parameters
@@ -37,131 +37,131 @@ READ_STRUCTURE=8M3S74T6B
 
 PARAM=()
 for opt in "$@"; do
-case "${opt}" in
-'-o' | '--out' )
-if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
-echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
-exit 1
-fi
-OUTNAME=true
-OUTPUT_NAME="$2"
-shift 2
-;;
-'-g' | '--genome' )
-if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
-echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
-exit 1
-elif [[ "$2" =  "hg19" ]]; then
-GENOME=true
-GENOME_VALUE="hg19"
-shift 2
-elif [[ "$2" =  "hg38" ]]; then
-GENOME=true
-GENOME_VALUE="hg38"
-shift 2
-elif [[ "$2" =  "mm9" ]]; then
-GENOME=true
-GENOME_VALUE="mm9"
-shift 2
-elif [[ "$2" =  "mm10" ]]; then
-GENOME=true
-GENOME_VALUE="mm10"
-shift 2
-elif  [[ "$2" =  "canFam3" ]]; then
-GENOME=true
-GENOME_VALUE="canFam3"
-shift 2
-else
-usage
-exit 1
-fi
-;;
-'-a' | '--annotation' )
-if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
-echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
-exit 1
-elif [[ "$2" =  "ref" ]]; then
-ANNO=true
-ANNO_VALUE="ref"
-shift 2
-elif [[ "$2" =  "kg" ]]; then
-ANNO=true
-ANNO_VALUE="kg"
-shift 2
-elif [[ "$2" =  "ens" ]]; then
-ANNO=true
-ANNO_VALUE="ens"
-shift 2
-else
-usage
-exit 1
-fi
-;;
-'-b' | '--basecalls' )
-if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
-echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
-exit 1
-fi
-BaseCallsDir=true
-BaseCallsDir_PATH="$2"
-shift 2
-;;
-'-i' | '--index' )
-if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
-echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
-exit 1
-fi
-Index=true
-Index_PATH="$2"
-shift 2
-;;
-'-c' | '--center' )
-if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
-echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
-exit 1
-fi
-center=true
-center_VALUE="$2"
-shift 2
-;;
-'-r' | '--run' )
-if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
-echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
-exit 1
-fi
-run=true
-run_VALUE="$2"
-shift 2
-;;
-'-s' | '--structure' )
-if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
-echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
-exit 1
-fi
-structure=true
-READ_STRUCTURE="$2"
-shift 2
-;;
-'-h' | '--help' )
-usage
-;;
-'-v' | '--version' )
-version
-;;
-'--' | '-' )
-shift
-PARAM+=( "$@" )
-break
-;;
--* )
-echo "${PROGNAME}: illegal option -- '$( echo $1 | sed 's/^-*//' )'" 1>&2
-exit 1
-;;
-esac
+    case "${opt}" in
+    '-o' | '--out' )
+            if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+                echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
+                exit 1
+            fi
+            OUTNAME=true
+            OUTPUT_NAME="$2"
+            shift 2
+            ;;
+    '-g' | '--genome' )
+            if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+              echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
+              exit 1
+            elif [[ "$2" =  "hg19" ]]; then
+              GENOME=true
+              GENOME_VALUE="hg19"
+              shift 2
+            elif [[ "$2" =  "hg38" ]]; then
+              GENOME=true
+              GENOME_VALUE="hg38"
+              shift 2
+            elif [[ "$2" =  "mm9" ]]; then
+              GENOME=true
+              GENOME_VALUE="mm9"
+              shift 2
+            elif [[ "$2" =  "mm10" ]]; then
+              GENOME=true
+              GENOME_VALUE="mm10"
+              shift 2
+            elif  [[ "$2" =  "canFam3" ]]; then
+              GENOME=true
+              GENOME_VALUE="canFam3"
+              shift 2
+            else
+              usage
+              exit 1
+            fi
+            ;;
+     '-a' | '--annotation' )
+            if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+              echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
+              exit 1
+            elif [[ "$2" =  "ref" ]]; then
+              ANNO=true
+              ANNO_VALUE="ref"
+              shift 2
+            elif [[ "$2" =  "kg" ]]; then
+              ANNO=true
+              ANNO_VALUE="kg"
+              shift 2
+            elif [[ "$2" =  "ens" ]]; then
+              ANNO=true
+              ANNO_VALUE="ens"
+              shift 2
+            else
+              usage
+              exit 1
+            fi
+            ;;
+    '-b' | '--basecalls' )
+            if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+                echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
+                exit 1
+            fi
+            BaseCallsDir=true
+            BaseCallsDir_PATH="$2"
+            shift 2
+            ;;
+    '-i' | '--index' )
+            if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+                echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
+                exit 1
+            fi
+            Index=true
+            Index_PATH="$2"
+            shift 2
+            ;;
+    '-c' | '--center' )
+            if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+                echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
+                exit 1
+            fi
+            center=true
+            center_VALUE="$2"
+            shift 2
+            ;;
+    '-r' | '--run' )
+            if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+                echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
+                exit 1
+            fi
+            run=true
+            run_VALUE="$2"
+            shift 2
+            ;;
+    '-s' | '--structure' )
+            if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+                echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
+                exit 1
+            fi
+            structure=true
+            READ_STRUCTURE="$2"
+            shift 2
+            ;;
+    '-h' | '--help' )
+            usage
+            ;;
+    '-v' | '--version' )
+            version
+            ;;
+    '--' | '-' )
+            shift
+            PARAM+=( "$@" )
+            break
+            ;;
+    -* )
+            echo "${PROGNAME}: illegal option -- '$( echo $1 | sed 's/^-*//' )'" 1>&2
+            exit 1
+            ;;
+    esac
 done
 
 if [[ -n "${PARAM[@]}" ]]; then
-usage
+    usage
 fi
 
 [ "${GENOME}" != "true" ] && usage
@@ -180,59 +180,59 @@ module load ruby/2.6.2
 
 #Preparation for annotation and QC
 if [[ ${GENOME_VALUE} = "hg38" ]] && [[ ${ANNO_VALUE} =  "ens" ]]; then
-echo "No Ensembl gene annotations!! Please use RefSeq or KnownGenes for hg38"
-exit 1
+  echo "No Ensembl gene annotations!! Please use RefSeq or KnownGenes for hg38"
+  exit 1
 elif [[ ${GENOME_VALUE} = "mm10" ]] && [[ ${ANNO_VALUE} =  "ens" ]]; then
-echo "No Ensembl gene annotations!! Please use RefSeq or KnownGenes for mm10"
-exit 1
+  echo "No Ensembl gene annotations!! Please use RefSeq or KnownGenes for mm10"
+  exit 1
 elif [[ ${GENOME_VALUE} = "canFam3" ]] && [[ ${ANNO_VALUE} =  "kg" ]]; then
-echo "No KnownGenes annotations!! Please use RefSeq or Ensembl for canFam3"
-exit 1
+  echo "No KnownGenes annotations!! Please use RefSeq or Ensembl for canFam3"
+  exit 1
 elif [[ ${ANNO_VALUE} =  "ens" ]]; then
-echo "downloading the Ensembl annotation data..."
-curl -o src/ensGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/ensGene.txt.gz
-curl -o src/ensemblToGeneName.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/ensemblToGeneName.txt.gz
-gunzip src/ensGene.txt.gz
-gunzip src/ensemblToGeneName.txt.gz
-join -1 1 -2 2 -t $'\t' <(sort -k 1,1 src/ensemblToGeneName.txt) <(sort -k 2,2 src/ensGene.txt) > src/common.txt
-join -1 1 -2 2 -t $'\t' -v 2 <(sort -k 1,1 src/ensemblToGeneName.txt) <(sort -k 2,2 src/ensGene.txt) | awk 'BEGIN{OFS="\t"}{print $2,$13,$1,$1=$2="",$0}' | cut -f 1-3,7- > src/no-genename.txt
-cat src/common.txt src/no-genename.txt > src/ens-genes.txt
-rm src/common.txt && rm src/no-genename.txt
-ruby ruby/ENSEMBL-extract.rb
-rm src/ens-genes.txt
-shift 2
+  echo "downloading the Ensembl annotation data..."
+  curl -o src/ensGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/ensGene.txt.gz
+  curl -o src/ensemblToGeneName.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/ensemblToGeneName.txt.gz
+  gunzip src/ensGene.txt.gz
+  gunzip src/ensemblToGeneName.txt.gz
+  join -1 1 -2 2 -t $'\t' <(sort -k 1,1 src/ensemblToGeneName.txt) <(sort -k 2,2 src/ensGene.txt) > src/common.txt
+  join -1 1 -2 2 -t $'\t' -v 2 <(sort -k 1,1 src/ensemblToGeneName.txt) <(sort -k 2,2 src/ensGene.txt) | awk 'BEGIN{OFS="\t"}{print $2,$13,$1,$1=$2="",$0}' | cut -f 1-3,7- > src/no-genename.txt
+  cat src/common.txt src/no-genename.txt > src/ens-genes.txt
+  rm src/common.txt && rm src/no-genename.txt
+  ruby ruby/ENSEMBL-extract.rb
+  rm src/ens-genes.txt
+  shift 2
 elif [[ ${ANNO_VALUE} =  "kg" ]]; then
-echo "downloading the UCSC KnownGenes annotation data..."
-curl -o src/knownGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/knownGene.txt.gz
-curl -o src/kgXref.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/kgXref.txt.gz
-gunzip src/knownGene.txt.gz
-gunzip src/kgXref.txt.gz
-join  -1 1 -2 1 -t $'\t' <(sort -k 1,1 src/kgXref.txt | cut -f 1-5) <(sort -k 1,1 src/knownGene.txt) > src/knowngene-names.txt
-rm src/knownGene.txt && rm src/kgXref.txt
-ruby ruby/KnownGenes-extract.rb
-rm src/knowngene-names.txt
-shift 2
+  echo "downloading the UCSC KnownGenes annotation data..."
+  curl -o src/knownGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/knownGene.txt.gz
+  curl -o src/kgXref.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/kgXref.txt.gz
+  gunzip src/knownGene.txt.gz
+  gunzip src/kgXref.txt.gz
+  join  -1 1 -2 1 -t $'\t' <(sort -k 1,1 src/kgXref.txt | cut -f 1-5) <(sort -k 1,1 src/knownGene.txt) > src/knowngene-names.txt
+  rm src/knownGene.txt && rm src/kgXref.txt
+  ruby ruby/KnownGenes-extract.rb
+  rm src/knowngene-names.txt
+  shift 2
 elif [[ ${ANNO_VALUE} =  "ref" ]]; then
-echo "downloading the NCBI RefSeq annotation data..."
-curl -o src/refGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/refGene.txt.gz
-gunzip src/refGene.txt.gz
-ruby ruby/RefSeq-extract.rb
-shift 2
+  echo "downloading the NCBI RefSeq annotation data..."
+  curl -o src/refGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/refGene.txt.gz
+  gunzip src/refGene.txt.gz
+  ruby ruby/RefSeq-extract.rb
+  shift 2
 else
-usage
-exit 1
+  usage
+  exit 1
 fi
 
 echo "downloading the chromosome size data..."
 curl -o src/${GENOME_VALUE}.chrom.sizes http://hgdownload.soe.ucsc.edu/goldenPath/${GENOME_VALUE}/bigZips/${GENOME_VALUE}.chrom.sizes
-cat src/${GENOME_VALUE}.chrom.sizes | awk '{print $1"\t"1"\t"$2}' | sortBed -i > src/chrom.size.bed
+cat src/${GENOME_VALUE}.chrom.sizes | awk '{print $1"\t"1"\t"$2}' | sortBed -i > src/chrom.size.bed 
 cat src/proxup.bed | grep -v _alt  | grep -v _hap | grep -v _fix | grep -v _random | grep -v chrUn | sortBed -i stdin | intersectBed -a stdin -b src/chrom.size.bed > src/proxup_trimmed.bed
 cat src/5utr.bed src/proxup_trimmed.bed | grep -v _alt | grep -v _hap | grep -v _fix | grep -v _random | grep -v chrUn | sortBed -i stdin | mergeBed -s -o distinct,distinct,distinct -c 4,5,6 -i - | grep -v , > src/coding_5end.bed
 cat src/exon.bed src/proxup_trimmed.bed | grep -v _alt | grep -v _hap | grep -v _fix | grep -v _random | grep -v chrUn | sortBed -i stdin | mergeBed -s -o distinct,distinct,distinct -c 4,5,6 -i - > src/coding.bed
 cat src/ERCC.bed src/coding_5end.bed | awk '{print $4 "\t" $1 "\t" $2+1 "\t" $3 "\t" $6}' > src/5end-regions.saf
 
 rm src/${GENOME_VALUE}.chrom.sizes
-rm src/5utr.bed
+rm src/5utr.bed 
 rm src/exon.bed
 rm src/proxup.bed
 rm src/proxup_trimmed.bed
@@ -284,27 +284,27 @@ mkdir out/HISAT2_Metrics
 for file in *.bam
 do
 name=$(basename $file .bam)
-echo $name >> out/HISAT2_Metrics/mapping-summary.txt
+echo $name >> out/HISAT2_Metrics/Alignment-summary.txt 
 java -Xmx16g -jar $PICARD_HOME/picard.jar SortSam \
-I=$file \
-O=tmp/.unmapped.sorted.bam \
-SORT_ORDER=queryname;
+      I=$file \
+      O=tmp/.unmapped.sorted.bam \
+     SORT_ORDER=queryname;
 java -Xmx16g -jar $PICARD_HOME/picard.jar SamToFastq \
 I=tmp/.unmapped.sorted.bam \
 F=/dev/stdout \
-| hisat2 -p 8 --dta -x ${Index_PATH} \
--U /dev/stdin -S /dev/stdout \
-2>> out/HISAT2_Metrics/mapping-summary.txt  \
-|java -Xmx16g -jar $PICARD_HOME/picard.jar SortSam \
-I=/dev/stdin \
-O=tmp/.mapped.sorted.sam \
-SORT_ORDER=queryname;
-java -Xmx16g -jar $PICARD_HOME/picard.jar MergeBamAlignment \
-ATTRIBUTES_TO_RETAIN=XS \
-UNMAPPED=tmp/.unmapped.sorted.bam  \
-ALIGNED=tmp/.mapped.sorted.sam \
-O=tmp/UMI/$name.umi.bam \
-R=${Index_PATH}.fasta
+  | hisat2 -p 8 --dta -x ${Index_PATH} \
+    -U /dev/stdin -S /dev/stdout \
+    2>> out/HISAT2_Metrics/Alignment-summary.txt  \
+  | java -Xmx16g -jar $PICARD_HOME/picard.jar SortSam \
+      I=/dev/stdin \
+      O=tmp/.mapped.sorted.sam \
+      SORT_ORDER=queryname;
+      java -Xmx16g -jar $PICARD_HOME/picard.jar MergeBamAlignment \
+      ATTRIBUTES_TO_RETAIN=XS \
+      UNMAPPED=tmp/.unmapped.sorted.bam  \
+      ALIGNED=tmp/.mapped.sorted.sam \
+      O=tmp/UMI/$name.umi.bam \
+      R=${Index_PATH}.fasta
 done
 
 rm tmp/.unmapped.sorted.bam
@@ -330,7 +330,7 @@ done
 
 rm -rf tmp/UMI
 
-#Mark potential PCR duplicates
+#Mark potential PCR duplicates 
 mkdir out/MarkDuplicates_Metrics
 for i in {1..48}
 do
@@ -345,7 +345,6 @@ rm -rf tmp/merged
 
 #Quality check
 cd out
-
 echo -e Barcode"\t"Qualified reads"\t"Total reads"\t"Redundancy"\t"Mapped reads"\t"Mapping rate\
 "\t"Spikein reads"\t"Spikein-5end reads"\t"Spikein-5end rate"\t"Coding reads"\t"Coding-5end reads"\t"Coding-5end rate > ${OUTPUT_NAME}-QC.txt
 
@@ -364,7 +363,7 @@ spikein_5end_rate=$(echo "scale=1;$spikein_5end_reads*100/$Spike" | bc)
 coding_reads=$(samtools view -u -F 256 -F 1024 -F 4 $file | intersectBed -abam stdin -wa -bed -b ../src/coding.bed | cut -f 4 | sort -u | wc -l)
 coding_5end_reads=$(samtools view -u -F 256 -F 1024 -F 4 $file | intersectBed -abam stdin -wa -bed -b ../src/coding_5end.bed | cut -f 4 | sort -u | wc -l)
 coding_5end_rate=$(echo "scale=1;$coding_5end_reads*100/$coding_reads" | bc)
-echo -e $name"\t"$QR"\t"$Total"\t"$Redundancy"\t"$Map"\t"$Rate"\t"$Spike"\t"$spikein_5end_reads"\t"$spikein_5end_rate"\t"$coding_reads"\t"$coding_5end_reads"\t"$coding_5end_rate >> ${OUTPUT_NAME}-QC.txt
+echo -e $name"\t"$QR"\t"$Total"\t"$Redundancy"\t"$Map"\t"$Rate"\t"$Spike"\t"$spikein_5end_reads"\t"$spikein_5end_rate"\t"$coding_reads"\t"$coding_5end_reads"\t"$coding_5end_rate >> ${OUTPUT_NAME}-QC.txt 
 done
 
 #Counting by featureCounts
