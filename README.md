@@ -6,6 +6,13 @@ A pipeline for the analysis of STRT2 sequencing outputs from NextSeq.
 ```
 git clone https://github.com/my0916/STRT2.git
 ```
+## Dependencies
+For STRT2.sh
+- [Picard](https://broadinstitute.github.io/picard/) 
+- [HISAT2](https://ccb.jhu.edu/software/hisat2/index.shtml)
+- [SAMtools](http://samtools.sourceforge.net/)
+- [bedtools](https://bedtools.readthedocs.io/en/latest/)
+- [Subread](http://subread.sourceforge.net/)
 
 ## Requirements
 - Illumina BaseCalls files (.bcl)
@@ -48,6 +55,10 @@ Options:
 https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_illumina_IlluminaBasecallsToSam.php#--READ_STRUCTURE
 
 ## Example
+```
+./STRT2.sh -o 191111test -g canFam3 -a ens
+-b /XXXXX/Data/Intensities/BaseCalls/ -c HUDDINGE -r ABCDEFG123 -i /XXXXX/index/canFam3_ensemblV4_ercc
+```
 ```
 sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111test -g canFam3 -a ens
 -b /XXXXX/Data/Intensities/BaseCalls/ -c HUDDINGE -r ABCDEFG123 -i /XXXXX/index/canFam3_ensemblV4_ercc
