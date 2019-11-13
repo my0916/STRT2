@@ -68,7 +68,7 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o STRT2LIB 
 Outputs are provided in `out` directory.
 Unaligned BAM files generated with Picard IlluminaBasecallsToSam program are found in `tmp/Unaligned_bam`.
 
-- __`OUTPUT`-QC.txt__
+### 1. `OUTPUT`-QC.txt
 
 Quality check report for all samples.
   - `Barcode` : Sample name. `OUTPUT` with numbers (1-48).
@@ -84,7 +84,7 @@ Quality check report for all samples.
   - `Coding-5end reads` : Read count aligned the 5′-UTR or 500 bp upstream of coding genes. 
   - `Coding-5end rate` : Coding-5end reads / Coding reads.
 
-- __`OUTPUT`_byGene-counts.txt__
+### 2. `OUTPUT`_byGene-counts.txt
 
 Read count table output from featureCounts. Details are described here: http://subread.sourceforge.net/
 
