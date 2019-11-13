@@ -47,7 +47,7 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111tes
    | Name | Default value | Description |
    | :--- | :--- | :--- |
    | `-o, --out` | OUTPUT | Output file name.|
-   | `-a, --annotation` | ref | Gene annotation for QC and counting. <br> Choose from `ref`(RefSeq)/`ens`(Ensembl)/`kg`(UCSC KnownGenes). <br>Note that Ensembl and UCSC KnownGenes are not available in some cases. Please find the details [below](#How-to-build-HISAT2-index).
+   | `-a, --annotation` | ref | Gene annotation for QC and counting. <br> Choose from `ref`(RefSeq)/`ens`(Ensembl)/`kg`(UCSC KnownGenes). <br>Note that Ensembl and UCSC KnownGenes are not available in some cases. Please find the details [below](#-a,---annotation).
   
 Options:
   -a, --annotation        Gene annotation (ref{RefSeq}/ens{Ensembl}/kg{UCSC KnownGenes}) for QC and counting. Default : ref. NOTE: no Ensembl for hg38&mm10, no KnownGenes for canFam3. 
@@ -60,9 +60,7 @@ Options:
   -v, --version           Show version.
 
 
-### `-a, --annotation`
-- `-g, --genome`, `-a, --annotation` : Note that Ensembl and UCSC KnownGenes are not available in some cases.
-
+#### -  `-a, --annotation`
    | | RefSeq (ref) | Ensembl (ens) | KnownGenes (kg) |
    | :---: | :---: | :---: | :---: |
    | hg19 (human) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
