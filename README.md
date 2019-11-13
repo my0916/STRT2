@@ -86,7 +86,7 @@ Quality check report for all samples.
    |`Coding-5end reads` | Read count aligned the 5′-UTR or 500 bp upstream of coding genes| 
    |`Coding-5end rate` | Coding-5end reads / Coding reads|
 
-- __`OUTPUT`_byGene-counts.txt__ <br>
+- __`OUTPUT`\_byGene-counts.txt__ <br>
 Read count table output from featureCounts. Details are described here: http://subread.sourceforge.net/
 
 ### 3. `OUTPUT`_byGene-counts.txt.summary
