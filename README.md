@@ -109,7 +109,7 @@ wget https://www-s.nist.gov/srmors/certificates/documents/SRM2374_putative_T7_pr
 cat SRM2374_putative_T7_products_NoPolyA_v2.FASTA >> canFam3_ercc.fa
 ```
 ### 2. Extract splice sites and exons from a GTF file.
-Here Ensembl transcript annotation data (canFam3.transMapEnsemblV4.gtf.gz) was downloaded from the UCSC Table Browser.
+Here Ensembl transcript annotation (canFam3.transMapEnsemblV4.gtf.gz) was downloaded from the UCSC Table Browser.
 ```
 unpigz -c canFam3.transMapEnsemblV4.gtf.gz | hisat2_extract_splice_sites.py - | grep -v ^chrUn > canFam3.ss
 unpigz -c canFam3.transMapEnsemblV4.gtf.gz | hisat2_extract_exons.py - | grep -v ^chrUn | > canFam3.exon
