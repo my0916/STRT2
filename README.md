@@ -32,16 +32,22 @@ STRT2-UPPMAX.sh [-o <output>] [-g <genome>] [-a <annotation>] [-b </PATH/to/base
 ```
 
 ## Parameters
-- Mandatory
+- __Mandatory__
 
    | Name | Description |
    | :--- | :--- |
    | `-g, --genome` | Reference genome. Choose from `hg19`/`hg38`/`mm9`/`mm10`/`canFam3`. |
-   | `-b, --basecalls` | /PATH/to/the Illumina basecalls directory.<br> Used in the Picard IlluminaBasecallsToSam program.|
-   
+   | `-b, --basecalls` | /PATH/to/the Illumina basecalls directory.|
+   | `-i, --index` | /PATH/to/the directory and basename of the HISAT2 index for the reference genome. |
+
+- __Optional__
+
+   | Name | Default value | Description |
+   | :--- | :--- | :--- |
+   | `-o, --out` | OUTPUT | Output file name.|
+   | `-a, --annotation` | ref | Output file name.|
+  
 Options:
-  -o, --out               Output file name. (default: OUTPUT)
-  -g, --genome            Genome (hg19/hg38/mm9/mm10/canFam3). Required!
   -a, --annotation        Gene annotation (ref{RefSeq}/ens{Ensembl}/kg{UCSC KnownGenes}) for QC and counting. Default : ref. NOTE: no Ensembl for hg38&mm10, no KnownGenes for canFam3. 
   -b, --basecalls         /PATH/to/the Illumina basecalls directory. Required!
   -i, --index             /PATH/to/the directory and basename of the HISAT2 index for the reference genome. Required!
