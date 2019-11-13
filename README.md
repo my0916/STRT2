@@ -24,15 +24,16 @@ For STRT2.sh
 
 ## Usage
 ```
-STRT2.sh [-o <output>] [-g <genome (required)>] [-a <annotation>] [-b <path (required)>] [-i <path (required)>]
+STRT2.sh [-o <output>] [-g <genome>] [-a <annotation>] [-b </PATH/to/basecalls>] [-i </PATH/to/index>]
 ```
 For UPPMAX:
 ```
-STRT2-UPPMAX.sh [-o <output>] [-g <genome (required)>] [-a <annotation>] [-b <path (required)>] [-i <path (required)>]
+STRT2-UPPMAX.sh [-o <output>] [-g <genome>] [-a <annotation>] [-b </PATH/to/basecalls>] [-i </PATH/to/index>]
 ```
 
 ## Parameters
 - Mandatory
+
    | Name | Description |
    | :---: | :---: |
    | `-g, --genome` | Genome (hg19/hg38/mm9/mm10/canFam3). |
