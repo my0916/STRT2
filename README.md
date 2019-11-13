@@ -57,7 +57,7 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111tes
 Outputs are provided in `out` directory.
 Unaligned BAM files generated with Picard IlluminaBasecallsToSam program are found in `tmp/Unaligned_bam`.
 
-#### 1. `OUTPUT`-QC.txt
+### 1. `OUTPUT`-QC.txt
 Quality check report for all samples.
 - `Barcode` : Sample name. `OUTPUT` with numbers (1-48).
 - `Qualified reads`: Primary aligned read count.	
@@ -72,10 +72,10 @@ Quality check report for all samples.
 - `Coding-5end reads` : Read count aligned the 5′-UTR or 500 bp upstream of coding genes. 
 - `Coding-5end rate` : Coding-5end reads / Coding reads.
 
-#### 2. `OUTPUT`_byGene-counts.txt
+### 2. `OUTPUT`_byGene-counts.txt
 Read count table output from featureCounts. Details are described here: http://subread.sourceforge.net/
 
-#### 3. `OUTPUT`_byGene-counts.txt.summary
+### 3. `OUTPUT`_byGene-counts.txt.summary
 Filtering summary from featureCounts. Details are described here: http://subread.sourceforge.net/
 
 ### 4. Output_bam
@@ -98,3 +98,24 @@ https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_s
 
 
 ## How to build HISAT2 index
+Here is the case for the dog genome (canFam3).
+### 1. Obtain the genome sequences of reference and ERCC spike-ins. 
+Add the ribosomal DNA sequence for human (U13369) and mouse (BK000964).
+```
+wget http://hgdownload.cse.ucsc.edu/goldenPath/canFam3/bigZips/canFam3.fa.gz
+unpigz -c canFam3.fa.gz | ruby -ne '$ok = $_ !~ /^>chrUn_/ if $_ =~ /^>/; puts $_ if $ok' > canFam3_ercc.fa
+
+wget https://www-s.nist.gov/srmors/certificates/documents/SRM2374_putative_T7_products_NoPolyA_v2.FASTA
+cat SRM2374_putative_T7_products_NoPolyA_v2.FASTA >> canFam3_ercc.fa
+```
+### 2. Extract splice sites and exons from a GTF file.
+Here Ensembl transcript annotation data (canFam3.transMapEnsemblV4.gtf.gz) was downloaded from the UCSC Table Browser.
+```
+unpigz -c canFam3.transMapEnsemblV4.gtf.gz | hisat2_extract_splice_sites.py - | grep -v ^chrUn > canFam3.ss
+unpigz -c canFam3.transMapEnsemblV4.gtf.gz | hisat2_extract_exons.py - | grep -v ^chrUn | > canFam3.exon
+```
+### 3. Build the HISAT2 index.
+```
+hisat2-build canFam3_ercc.fa --ss canFam3.ss --exon canFam3.exon canFam3_ensemblV4_ercc
+```
+Here 'canFam3_ensemblV4_ercc' is the basename used for `-i, --index`.
