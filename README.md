@@ -89,24 +89,24 @@ Quality check report for all samples.
 - __`OUTPUT`\_byGene-counts.txt__ <br>
 Read count table output from featureCounts. Details are described here: http://subread.sourceforge.net/
 
-### 3. `OUTPUT`_byGene-counts.txt.summary
+- __`OUTPUT`\_byGene-counts.txt.summary__ <br>
 Filtering summary from featureCounts. Details are described here: http://subread.sourceforge.net/
 
-### 4. Output_bam
+- __Output_bam__ <br>
 Resulting BAM files including unmapped, non-primary aligned, and duplicated (marked) reads.
 
-### 5. Output_bai
+- __Output_bai__ <br>
 Index files (.bai) of the resulting BAM files in the `Output_bam` directory.
 
-### 6. ExtractIlluminaBarcodes_Metrics
+- __ExtractIlluminaBarcodes_Metrics__ <br>
 Metrics file produced by the Picard ExtractIlluminaBarcodes program.
 https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.0.0/picard_illumina_ExtractIlluminaBarcodes.php
 
-### 7. HISAT2_Metrics
+- __HISAT2_Metrics__ <br>
 Alignment summary of samples from each lane produced by the HISAT2 program. 
 https://ccb.jhu.edu/software/hisat2/manual.shtml#alignment-summary
 
-### 8. MarkDuplicates_Metrics
+- __MarkDuplicates_Metrics__ <br>
 Metrics file indicating the numbers of duplicates produced by the Picard MarkDuplicates program.
 https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_sam_markduplicates_MarkDuplicates.php
 
