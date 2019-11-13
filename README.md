@@ -44,26 +44,21 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111tes
 
 - __Optional__
 
-   | Name | Default value | Description |
+   | Name | Default | Description |
    | :--- | :--- | :--- |
    | `-o, --out` | OUTPUT | Output file name.|
    | `-a, --annotation` | ref | Gene annotation for QC and counting. <br> Choose from `ref`(RefSeq)/`ens`(Ensembl)/`kg`(UCSC KnownGenes). <br>Note that Ensembl and UCSC KnownGenes are not available in some cases. Please find the details below.
-  
-Options:
-  -a, --annotation        Gene annotation (ref{RefSeq}/ens{Ensembl}/kg{UCSC KnownGenes}) for QC and counting. Default : ref. NOTE: no Ensembl for hg38&mm10, no KnownGenes for canFam3. 
-  -b, --basecalls         /PATH/to/the Illumina basecalls directory. Required!
-  -i, --index             /PATH/to/the directory and basename of the HISAT2 index for the reference genome. Required!
-  -c, --center            The name of the sequencing center that produced the reads. (default: CENTER)
-  -r, --run               The barcode of the run. Prefixed to read names. (default: RUNBARCODE)
-  -s, --structure         Read structure (default: 8M3S74T6B)
-  -h, --help              Show usage.
-  -v, --version           Show version.
-
-    - `-a, --annotation` 
+   | `-c, --center ` | CENTER | The name of the sequencing center that produced the reads.|
+   | `-r, --run` | RUNBARCODE | The barcode of the run. Prefixed to read names.|
+   | `-s, --structure` | 8M3S74T6B | Read structure.|
+   | `-h, --help`| | Show usage.|
+   | `-v, --version`| | Show version.|
+   
+   - `-a, --annotation` 
     | | RefSeq (ref) | Ensembl (ens) | KnownGenes (kg) |
     | :---: | :---: | :---: | :---: |
     | hg19 (human) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-    | hg38 (human) | :heavy_check_mark: | NA | :heavy_check_mark: |
+    |  hg38 (human) | :heavy_check_mark: | NA | :heavy_check_mark: |
     | mm9 (mouse) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
     | mm10 (mouse) | :heavy_check_mark: | NA | :heavy_check_mark: |
     | canFam3 (dog) | :heavy_check_mark: | :heavy_check_mark: | NA |
