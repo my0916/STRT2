@@ -24,8 +24,20 @@ For STRT2.sh
 
 ## Usage
 ```
+STRT2.sh [-o <output>] [-g <genome (required)>] [-a <annotation>] [-b <path (required)>] [-i <path (required)>]
+```
+For UPPMAX:
+```
 STRT2-UPPMAX.sh [-o <output>] [-g <genome (required)>] [-a <annotation>] [-b <path (required)>] [-i <path (required)>]
+```
 
+## Parameters
+- Mandatory
+   | Name | Description |
+   | :---: | :---: |
+   | `-g, --genome` | Genome (hg19/hg38/mm9/mm10/canFam3). |
+   | `-b, --basecalls` | /PATH/to/the Illumina basecalls directory. |
+   
 Options:
   -o, --out               Output file name. (default: OUTPUT)
   -g, --genome            Genome (hg19/hg38/mm9/mm10/canFam3). Required!
@@ -37,7 +49,7 @@ Options:
   -s, --structure         Read structure (default: 8M3S74T6B)
   -h, --help              Show usage.
   -v, --version           Show version.
-```
+
 
 ### Options in detail
 - `-g, --genome`, `-a, --annotation` : Note that Ensembl and UCSC KnownGenes are not available in some cases.
@@ -59,6 +71,7 @@ https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_i
 ./STRT2.sh -o 191111test -g canFam3 -a ens -b /XXXXX/Data/Intensities/BaseCalls/ \
 -c HUDDINGE -r ABCDEFG123 -i /XXXXX/index/canFam3_ensemblV4_ercc
 ```
+For UPPMAX:
 ```
 sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o 191111test -g canFam3 -a ens \
 -b /XXXXX/Data/Intensities/BaseCalls/ -c HUDDINGE -r ABCDEFG123 -i /XXXXX/index/canFam3_ensemblV4_ercc
