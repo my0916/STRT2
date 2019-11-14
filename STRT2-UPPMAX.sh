@@ -11,8 +11,8 @@ Options:
   -o, --out               Output file name. (default: OUTPUT)
   -g, --genome            Genome (hg19/hg38/mm9/mm10/canFam3). Required!
   -a, --annotation        Gene annotation (ref{RefSeq}/ens{Ensembl}/kg{UCSC KnownGenes}) for QC and counting. Default : ref. NOTE: no Ensembl for hg38&mm10, no KnownGenes for canFam3.  
-  -b, --basecalls         /PATH/to/the Illumina basecalls directory. Fasta file has to be 'basename.fasta'. Required!
-  -i, --index             /PATH/to/the directory and basename of the HISAT2 index for the reference genome. Required! 
+  -b, --basecalls         /PATH/to/the Illumina basecalls directory. Required!
+  -i, --index             /PATH/to/the directory and basename of the HISAT2 index. Fasta file has to be 'basename.fasta'. Required! 
   -c, --center            The name of the sequencing center that produced the reads. (default: CENTER)
   -r, --run               The barcode of the run. Prefixed to read names. (default: RUNBARCODE)
   -s, --structure         Read structure (default: 8M3S74T6B)
