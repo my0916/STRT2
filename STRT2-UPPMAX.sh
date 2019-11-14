@@ -11,11 +11,12 @@ Options:
   -o, --out               Output file name. (default: OUTPUT)
   -g, --genome            Genome (hg19/hg38/mm9/mm10/canFam3). Required!
   -a, --annotation        Gene annotation (ref{RefSeq}/ens{Ensembl}/kg{UCSC KnownGenes}) for QC and counting. Default : ref. NOTE: no Ensembl for hg38&mm10, no KnownGenes for canFam3.  
-  -b, --basecalls         /PATH/to/the Illumina basecalls directory. Required!
+  -b, --basecalls         /PATH/to/the Illumina basecalls directory. Fasta file has to be 'basename.fasta'. Required!
   -i, --index             /PATH/to/the directory and basename of the HISAT2 index for the reference genome. Required! 
   -c, --center            The name of the sequencing center that produced the reads. (default: CENTER)
   -r, --run               The barcode of the run. Prefixed to read names. (default: RUNBARCODE)
   -s, --structure         Read structure (default: 8M3S74T6B)
+  -d, --dta               Downstream-transcriptome-assembly for HISAT2, which is useful for TFE-based analysis but leads to fewer alignments with short-anchors.
   -h, --help              Show usage.
   -v, --version           Show version.
 EOS
@@ -34,6 +35,7 @@ OUTPUT_NAME=OUTPUT
 run_VALUE=RUNBARCODE
 center_VALUE=CENTER
 READ_STRUCTURE=8M3S74T6B
+IF_DTA=false
 
 PARAM=()
 for opt in "$@"; do
@@ -142,6 +144,9 @@ for opt in "$@"; do
             READ_STRUCTURE="$2"
             shift 2
             ;;
+    '-d' | '--dta' )
+            IF_DTA=true; shift
+            ;;
     '-h' | '--help' )
             usage
             ;;
@@ -177,65 +182,6 @@ module load samtools/1.9
 module load BEDTools/2.27.1
 module load subread/1.5.2
 module load ruby/2.6.2
-
-#Preparation for annotation and QC
-if [[ ${GENOME_VALUE} = "hg38" ]] && [[ ${ANNO_VALUE} =  "ens" ]]; then
-  echo "No Ensembl gene annotations!! Please use RefSeq or KnownGenes for hg38"
-  exit 1
-elif [[ ${GENOME_VALUE} = "mm10" ]] && [[ ${ANNO_VALUE} =  "ens" ]]; then
-  echo "No Ensembl gene annotations!! Please use RefSeq or KnownGenes for mm10"
-  exit 1
-elif [[ ${GENOME_VALUE} = "canFam3" ]] && [[ ${ANNO_VALUE} =  "kg" ]]; then
-  echo "No KnownGenes annotations!! Please use RefSeq or Ensembl for canFam3"
-  exit 1
-elif [[ ${ANNO_VALUE} =  "ens" ]]; then
-  echo "downloading the Ensembl annotation data..."
-  curl -o src/ensGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/ensGene.txt.gz
-  curl -o src/ensemblToGeneName.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/ensemblToGeneName.txt.gz
-  gunzip src/ensGene.txt.gz
-  gunzip src/ensemblToGeneName.txt.gz
-  join -1 1 -2 2 -t $'\t' <(sort -k 1,1 src/ensemblToGeneName.txt) <(sort -k 2,2 src/ensGene.txt) > src/common.txt
-  join -1 1 -2 2 -t $'\t' -v 2 <(sort -k 1,1 src/ensemblToGeneName.txt) <(sort -k 2,2 src/ensGene.txt) | awk 'BEGIN{OFS="\t"}{print $2,$13,$1,$1=$2="",$0}' | cut -f 1-3,7- > src/no-genename.txt
-  cat src/common.txt src/no-genename.txt > src/ens-genes.txt
-  rm src/common.txt && rm src/no-genename.txt
-  ruby ruby/ENSEMBL-extract.rb
-  rm src/ens-genes.txt
-  shift 2
-elif [[ ${ANNO_VALUE} =  "kg" ]]; then
-  echo "downloading the UCSC KnownGenes annotation data..."
-  curl -o src/knownGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/knownGene.txt.gz
-  curl -o src/kgXref.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/kgXref.txt.gz
-  gunzip src/knownGene.txt.gz
-  gunzip src/kgXref.txt.gz
-  join  -1 1 -2 1 -t $'\t' <(sort -k 1,1 src/kgXref.txt | cut -f 1-5) <(sort -k 1,1 src/knownGene.txt) > src/knowngene-names.txt
-  rm src/knownGene.txt && rm src/kgXref.txt
-  ruby ruby/KnownGenes-extract.rb
-  rm src/knowngene-names.txt
-  shift 2
-elif [[ ${ANNO_VALUE} =  "ref" ]]; then
-  echo "downloading the NCBI RefSeq annotation data..."
-  curl -o src/refGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/refGene.txt.gz
-  gunzip src/refGene.txt.gz
-  ruby ruby/RefSeq-extract.rb
-  shift 2
-else
-  usage
-  exit 1
-fi
-
-echo "downloading the chromosome size data..."
-curl -o src/${GENOME_VALUE}.chrom.sizes http://hgdownload.soe.ucsc.edu/goldenPath/${GENOME_VALUE}/bigZips/${GENOME_VALUE}.chrom.sizes
-cat src/${GENOME_VALUE}.chrom.sizes | awk '{print $1"\t"1"\t"$2}' | sortBed -i > src/chrom.size.bed 
-cat src/proxup.bed | grep -v _alt  | grep -v _hap | grep -v _fix | grep -v _random | grep -v chrUn | sortBed -i stdin | intersectBed -a stdin -b src/chrom.size.bed > src/proxup_trimmed.bed
-cat src/5utr.bed src/proxup_trimmed.bed | grep -v _alt | grep -v _hap | grep -v _fix | grep -v _random | grep -v chrUn | sortBed -i stdin | mergeBed -s -o distinct,distinct,distinct -c 4,5,6 -i - | grep -v , > src/coding_5end.bed
-cat src/exon.bed src/proxup_trimmed.bed | grep -v _alt | grep -v _hap | grep -v _fix | grep -v _random | grep -v chrUn | sortBed -i stdin | mergeBed -s -o distinct,distinct,distinct -c 4,5,6 -i - > src/coding.bed
-cat src/ERCC.bed src/coding_5end.bed | awk '{print $4 "\t" $1 "\t" $2+1 "\t" $3 "\t" $6}' > src/5end-regions.saf
-
-rm src/${GENOME_VALUE}.chrom.sizes
-rm src/5utr.bed 
-rm src/exon.bed
-rm src/proxup.bed
-rm src/proxup_trimmed.bed
 
 #Temporary and output directory
 mkdir tmp
@@ -277,25 +223,35 @@ done
 rm library.param.lane*
 mkdir out/ExtractIlluminaBarcodes_Metrics && mv metrics_output_lane*.txt out/ExtractIlluminaBarcodes_Metrics
 
+#Make the fasta reference / sequence dictionary if they do not exist. 
+if [[ ! -e ${Index_PATH}.fasta ]]; then
+  hisat2-inspect ${Index_PATH} > ${Index_PATH}.fasta
+  java -Xmx16g -jar $PICARD_HOME/picard.jar CreateSequenceDictionary R=${Index_PATH}.fasta O=${Index_PATH}.dict
+fi
+if [[ ! -e ${Index_PATH}.dict ]]; then
+  java -Xmx16g -jar $PICARD_HOME/picard.jar CreateSequenceDictionary R=${Index_PATH}.fasta O=${Index_PATH}.dict
+fi
+
 #Mapping by HISAT2 and merging with the original unaligned BAM files to generate UMI-annotated BAM files
 mkdir tmp/UMI
 mkdir out/HISAT2_Metrics
 
-for file in *.bam
-do
-name=$(basename $file .bam)
-echo $name >> out/HISAT2_Metrics/Alignment-summary.txt 
-java -Xmx16g -jar $PICARD_HOME/picard.jar SortSam \
+if [ $IF_DTA = true ]; then
+  for file in *.bam
+  do
+  name=$(basename $file .bam)
+  echo $name >> out/HISAT2_Metrics/Alignment-summary.txt 
+  java -Xmx16g -jar $PICARD_HOME/picard.jar SortSam \
       I=$file \
       O=tmp/.unmapped.sorted.bam \
      SORT_ORDER=queryname;
-java -Xmx16g -jar $PICARD_HOME/picard.jar SamToFastq \
-I=tmp/.unmapped.sorted.bam \
-F=/dev/stdout \
-  | hisat2 -p 8 --dta -x ${Index_PATH} \
+  java -Xmx16g -jar $PICARD_HOME/picard.jar SamToFastq \
+  I=tmp/.unmapped.sorted.bam \
+  F=/dev/stdout \
+    | hisat2 -p 8 --dta -x ${Index_PATH} \
     -U /dev/stdin -S /dev/stdout \
     2>> out/HISAT2_Metrics/Alignment-summary.txt  \
-  | java -Xmx16g -jar $PICARD_HOME/picard.jar SortSam \
+    | java -Xmx16g -jar $PICARD_HOME/picard.jar SortSam \
       I=/dev/stdin \
       O=tmp/.mapped.sorted.sam \
       SORT_ORDER=queryname;
@@ -305,7 +261,34 @@ F=/dev/stdout \
       ALIGNED=tmp/.mapped.sorted.sam \
       O=tmp/UMI/$name.umi.bam \
       R=${Index_PATH}.fasta
-done
+  done
+else
+  for file in *.bam
+  do
+  name=$(basename $file .bam)
+  echo $name >> out/HISAT2_Metrics/Alignment-summary.txt 
+  java -Xmx16g -jar $PICARD_HOME/picard.jar SortSam \
+      I=$file \
+      O=tmp/.unmapped.sorted.bam \
+     SORT_ORDER=queryname;
+  java -Xmx16g -jar $PICARD_HOME/picard.jar SamToFastq \
+  I=tmp/.unmapped.sorted.bam \
+  F=/dev/stdout \
+    | hisat2 -p 8 -x ${Index_PATH} \
+    -U /dev/stdin -S /dev/stdout \
+    2>> out/HISAT2_Metrics/Alignment-summary.txt  \
+    | java -Xmx16g -jar $PICARD_HOME/picard.jar SortSam \
+      I=/dev/stdin \
+      O=tmp/.mapped.sorted.sam \
+      SORT_ORDER=queryname;
+      java -Xmx16g -jar $PICARD_HOME/picard.jar MergeBamAlignment \
+      ATTRIBUTES_TO_RETAIN=XS \
+      UNMAPPED=tmp/.unmapped.sorted.bam  \
+      ALIGNED=tmp/.mapped.sorted.sam \
+      O=tmp/UMI/$name.umi.bam \
+      R=${Index_PATH}.fasta
+  done
+fi
 
 rm tmp/.unmapped.sorted.bam
 rm tmp/.mapped.sorted.sam
@@ -342,6 +325,65 @@ BARCODE_TAG=RX
 done
 
 rm -rf tmp/merged
+
+#Preparation for annotation and QC
+if [[ ${GENOME_VALUE} = "hg38" ]] && [[ ${ANNO_VALUE} =  "ens" ]]; then
+  echo "No Ensembl gene annotations!! Please use RefSeq or KnownGenes for hg38"
+  exit 1
+elif [[ ${GENOME_VALUE} = "mm10" ]] && [[ ${ANNO_VALUE} =  "ens" ]]; then
+  echo "No Ensembl gene annotations!! Please use RefSeq or KnownGenes for mm10"
+  exit 1
+elif [[ ${GENOME_VALUE} = "canFam3" ]] && [[ ${ANNO_VALUE} =  "kg" ]]; then
+  echo "No KnownGenes annotations!! Please use RefSeq or Ensembl for canFam3"
+  exit 1
+elif [[ ${ANNO_VALUE} =  "ens" ]]; then
+  echo "Downloading the Ensembl annotation data..."
+  curl -o src/ensGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/ensGene.txt.gz
+  curl -o src/ensemblToGeneName.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/ensemblToGeneName.txt.gz
+  gunzip src/ensGene.txt.gz
+  gunzip src/ensemblToGeneName.txt.gz
+  join -1 1 -2 2 -t $'\t' <(sort -k 1,1 src/ensemblToGeneName.txt) <(sort -k 2,2 src/ensGene.txt) > src/common.txt
+  join -1 1 -2 2 -t $'\t' -v 2 <(sort -k 1,1 src/ensemblToGeneName.txt) <(sort -k 2,2 src/ensGene.txt) | awk 'BEGIN{OFS="\t"}{print $2,$13,$1,$1=$2="",$0}' | cut -f 1-3,7- > src/no-genename.txt
+  cat src/common.txt src/no-genename.txt > src/ens-genes.txt
+  rm src/common.txt && rm src/no-genename.txt
+  ruby ruby/ENSEMBL-extract.rb
+  rm src/ens-genes.txt
+  shift 2
+elif [[ ${ANNO_VALUE} =  "kg" ]]; then
+  echo "Downloading the UCSC KnownGenes annotation data..."
+  curl -o src/knownGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/knownGene.txt.gz
+  curl -o src/kgXref.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/kgXref.txt.gz
+  gunzip src/knownGene.txt.gz
+  gunzip src/kgXref.txt.gz
+  join  -1 1 -2 1 -t $'\t' <(sort -k 1,1 src/kgXref.txt | cut -f 1-5) <(sort -k 1,1 src/knownGene.txt) > src/knowngene-names.txt
+  rm src/knownGene.txt && rm src/kgXref.txt
+  ruby ruby/KnownGenes-extract.rb
+  rm src/knowngene-names.txt
+  shift 2
+elif [[ ${ANNO_VALUE} =  "ref" ]]; then
+  echo "Downloading the NCBI RefSeq annotation data..."
+  curl -o src/refGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/refGene.txt.gz
+  gunzip src/refGene.txt.gz
+  ruby ruby/RefSeq-extract.rb
+  shift 2
+else
+  usage
+  exit 1
+fi
+
+echo "Downloading the chromosome size data..."
+curl -o src/${GENOME_VALUE}.chrom.sizes http://hgdownload.soe.ucsc.edu/goldenPath/${GENOME_VALUE}/bigZips/${GENOME_VALUE}.chrom.sizes
+cat src/${GENOME_VALUE}.chrom.sizes | awk '{print $1"\t"1"\t"$2}' | sortBed -i > src/chrom.size.bed 
+cat src/proxup.bed | grep -v _alt  | grep -v _hap | grep -v _fix | grep -v _random | grep -v ^chrUn | sortBed -i stdin | intersectBed -a stdin -b src/chrom.size.bed > src/proxup_trimmed.bed
+cat src/5utr.bed src/proxup_trimmed.bed | grep -v _alt | grep -v _hap | grep -v _fix | grep -v _random | grep -v ^chrUn | sortBed -i stdin | mergeBed -s -o distinct,distinct,distinct -c 4,5,6 -i - | grep -v , > src/coding_5end.bed
+cat src/exon.bed src/proxup_trimmed.bed | grep -v _alt | grep -v _hap | grep -v _fix | grep -v _random | grep -v ^chrUn | sortBed -i stdin | mergeBed -s -o distinct,distinct,distinct -c 4,5,6 -i - > src/coding.bed
+cat src/ERCC.bed src/coding_5end.bed | awk '{print $4 "\t" $1 "\t" $2+1 "\t" $3 "\t" $6}' > src/5end-regions.saf
+
+rm src/${GENOME_VALUE}.chrom.sizes
+rm src/5utr.bed 
+rm src/exon.bed
+rm src/proxup.bed
+rm src/proxup_trimmed.bed
 
 #Quality check
 cd out
