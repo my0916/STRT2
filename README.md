@@ -18,8 +18,7 @@ For STRT2.sh
 - Illumina BaseCalls files (.bcl)
 - HISAT2 index built with a reference genome, (ribosomal DNA), and ERCC spike-ins 
   - See also [How to build HISAT2 index](#How-to-build-HISAT2-index).
-  - Note that `[basename].*.ht2` and `[basename].fasta` are included in the index directory.
-  - Sequence dictionary for the reference sequence (`.dict`) is also needed.
+  - Note that `[basename].*.ht2`, `[basename].fasta`, and `[basename].dict` are included in the index directory.
 - Source files (in `src` directory)
   - `barcode.txt` : Barcode sequence with barcode name (1-48).
   - `ERCC.bed` : 5'-end 50 nt region of ERCC spike-ins ([SRM2374](https://www-s.nist.gov/srmors/view_detail.cfm?srm=2374)) for annotation and quality check.
