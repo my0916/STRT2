@@ -18,7 +18,7 @@ For STRT2.sh
 - Illumina BaseCalls files (.bcl)
 - HISAT2 index built with a reference genome, (ribosomal DNA), and ERCC spike-ins 
   - See also [How to build HISAT2 index](#How-to-build-HISAT2-index).
-  - Note that `basename`.\*.ht2 and `basename`.fasta are included in the index directory.
+  - Note that `_basename_.\*.ht2` and `_basename_.fasta` are included in the index directory.
 - Source files (in `src` directory)
   - `barcode.txt` : Barcode sequence with barcode name (1-48).
   - `ERCC.bed` : 5'-end 50 nt region of ERCC spike-ins ([SRM2374](https://www-s.nist.gov/srmors/view_detail.cfm?srm=2374)) for annotation and quality check.
@@ -41,7 +41,7 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o STRT2LIB 
    | :--- | :--- |
    | `-g, --genome` | Reference genome. Choose from `hg19`/`hg38`/`mm9`/`mm10`/`canFam3`. |
    | `-b, --basecalls` | /PATH/to/the Illumina basecalls directory.|
-   | `-i, --index` | /PATH/to/the directory and `basename` of the HISAT2 index for the reference genome. |
+   | `-i, --index` | /PATH/to/the directory and basename of the HISAT2 index for the reference genome. |
 
 - __Optional__
 
