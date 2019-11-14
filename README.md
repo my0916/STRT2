@@ -51,6 +51,7 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o STRT2LIB 
    | `-c, --center ` | CENTER | The name of the sequencing center that produced the reads.<br>Required for the the Picard IlluminaBasecallsToSam program.|
    | `-r, --run` | RUNBARCODE | The barcode of the run. Prefixed to read names.<br>Required for the the Picard IlluminaBasecallsToSam program.|
    | `-s, --structure` | 8M3S74T6B | Read structure.<br>Required for the the Picard IlluminaBasecallsToSam program.<br>Details are described [here](https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_illumina_IlluminaBasecallsToSam.php#--READ_STRUCTURE).|
+   | `-d, --dta` | | Add `-d, --dta` (downstream-transcriptome-assembly) if you plan to perform TFE-based analysis.<br>Please note that this leads to fewer alignments with short-anchors.|
    | `-h, --help`| | Show usage.|
    | `-v, --version`| | Show version.|
    
