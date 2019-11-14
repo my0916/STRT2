@@ -120,10 +120,10 @@ Here is the case for the dog genome (canFam3).
 You may add the ribosomal DNA sequence for human (U13369) and mouse (BK000964).
 ```
 wget http://hgdownload.cse.ucsc.edu/goldenPath/canFam3/bigZips/canFam3.fa.gz
-unpigz -c canFam3.fa.gz | ruby -ne '$ok = $_ !~ /^>chrUn_/ if $_ =~ /^>/; puts $_ if $ok' > canFam3_ercc.fa
+unpigz -c canFam3.fa.gz | ruby -ne '$ok = $_ !~ /^>chrUn_/ if $_ =~ /^>/; puts $_ if $ok' > canFam3_reference.fasta
 
 wget https://www-s.nist.gov/srmors/certificates/documents/SRM2374_putative_T7_products_NoPolyA_v2.FASTA
-cat SRM2374_putative_T7_products_NoPolyA_v2.FASTA >> canFam3_ercc.fa
+cat SRM2374_putative_T7_products_NoPolyA_v2.FASTA >> canFam3_reference.fasta
 ```
 ### 2. Extract splice sites and exons from a GTF file.
 Here Ensembl transcript map (canFam3.transMapEnsemblV4.gtf.gz) was downloaded from the UCSC Table Browser.
@@ -133,6 +133,6 @@ unpigz -c canFam3.transMapEnsemblV4.gtf.gz | hisat2_extract_exons.py - | grep -v
 ```
 ### 3. Build the HISAT2 index.
 ```
-hisat2-build canFam3_ercc.fa --ss canFam3.ss --exon canFam3.exon canFam3_ensemblV4_ercc
+hisat2-build canFam3_reference.fasta --ss canFam3.ss --exon canFam3.exon canFam3_reference
 ```
-In this case, `canFam3_ensemblV4_ercc` is the basename used for `-i, --index`.
+In this case, `canFam3_reference` is the basename used for `-i, --index`.
