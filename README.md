@@ -136,3 +136,9 @@ unpigz -c canFam3.transMapEnsemblV4.gtf.gz | hisat2_extract_exons.py - | grep -v
 hisat2-build canFam3_reference.fasta --ss canFam3.ss --exon canFam3.exon canFam3_reference
 ```
 In this case, `canFam3_reference` is the basename used for `-i, --index`.
+
+### 4. Prepare the sequence dictionary for the reference sequence. 
+```
+java -jar picard.jar CreateSequenceDictionary R=canFam3_reference.fasta O=canFam3_reference.dict
+```
+This is required for the Picard MergeBamAlignment program.
