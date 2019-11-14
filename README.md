@@ -56,7 +56,7 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o STRT2LIB 
    | `-h, --help`| | Show usage.|
    | `-v, --version`| | Show version.|
    
-   - `-a, --annotation` availability:
+   - `-a, --annotation` availability as of November 2019:
    
     | | RefSeq (ref) | Ensembl (ens) | KnownGenes (kg) |
     | :---: | :---: | :---: | :---: |
