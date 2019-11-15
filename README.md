@@ -132,7 +132,7 @@ Here Ensembl transcript map (canFam3.transMapEnsemblV4.gtf.gz) was downloaded fr
 unpigz -c canFam3.transMapEnsemblV4.gtf.gz | hisat2_extract_splice_sites.py - | grep -v ^chrUn > canFam3.ss
 unpigz -c canFam3.transMapEnsemblV4.gtf.gz | hisat2_extract_exons.py - | grep -v ^chrUn | > canFam3.exon
 ```
-You may add hisat2_extract_snps_haplotypes_UCSC.py to extract SNPs and haplotypes from a dbSNP file for human and mouse.
+You may additionally perform `hisat2_extract_snps_haplotypes_UCSC.py` to extract SNPs and haplotypes from a dbSNP file for human and mouse.
 
 ### 3. Build the HISAT2 index.
 ```
