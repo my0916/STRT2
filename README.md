@@ -136,7 +136,7 @@ unpigz -c canFam3.transMapEnsemblV4.gtf.gz | hisat2_extract_exons.py - | grep -v
 ```
 hisat2-build canFam3_reference.fasta --ss canFam3.ss --exon canFam3.exon canFam3_reference
 ```
-This outputs a set of files with suffixes. Here, `canFam3_reference.1.ht2`, `canFam3_reference.2.ht2`, `canFam3_reference.3.ht2`, `canFam3_reference.4.ht2`, `canFam3_reference.5.ht2`, `canFam3_reference.6.ht2`, `canFam3_reference.7.ht2`, and `canFam3_reference.8.ht2` are generated.<br>In this case, `canFam3_reference` is the basename used for `-i, --index`.
+This outputs a set of files with suffixes. Here, `canFam3_reference.1.ht2`, `canFam3_reference.2.ht2`, ..., `canFam3_reference.8.ht2` are generated.<br>In this case, `canFam3_reference` is the basename used for `-i, --index`.
 
 ### 4. Prepare the sequence dictionary for the reference sequence. 
 ```
