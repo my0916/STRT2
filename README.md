@@ -142,4 +142,4 @@ This outputs a set of files with suffixes. Here, `canFam3_reference.1.ht2`, `can
 ```
 java -jar picard.jar CreateSequenceDictionary R=canFam3_reference.fasta O=canFam3_reference.dict
 ```
-This is required for the Picard MergeBamAlignment program.
+This is required for the Picard MergeBamAlignment program. Note that the original FASTA file (`canFam3_reference.fasta` here) is also required.
