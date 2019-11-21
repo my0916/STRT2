@@ -24,7 +24,19 @@ For STRT2.sh
 ```
 - HISAT2 index built with a reference genome, (ribosomal DNA), and ERCC spike-ins 
   - See also [How to build HISAT2 index](#How-to-build-HISAT2-index).
-  - Note that `[basename].*.ht2`, `[basename].fasta`, and `[basename].dict` are included in the index directory.
+  - The basecalls directory contents should include the follwings:
+```
+    ├── [basename].1.ht2
+    ├── [basename].2.ht2
+    ├── [basename].3.ht2
+    ├── [basename].4.ht2
+    ├── [basename].5.ht2
+    ├── [basename].6.ht2
+    ├── [basename].7.ht2
+    ├── [basename].8.ht2
+    ├── [basename].fasta
+    └── [basename].dict
+```
 - Source files (in `src` directory)
   - `barcode.txt` : Barcode sequence with barcode name (1-48).
   - `ERCC.bed` : 5'-end 50 nt region of ERCC spike-ins ([SRM2374](https://www-s.nist.gov/srmors/view_detail.cfm?srm=2374)) for annotation and quality check.
