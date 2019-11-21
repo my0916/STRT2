@@ -200,6 +200,7 @@ sed -e "s/Lane1/Lane2/g" library.param.lane1 > library.param.lane2
 sed -e "s/Lane1/Lane3/g" library.param.lane1 > library.param.lane3
 sed -e "s/Lane1/Lane4/g" library.param.lane1 > library.param.lane4
 
+
 #Convert BCL files to BAM files
 for i in {1..4}
 do
