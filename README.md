@@ -24,7 +24,7 @@ For STRT2.sh
 ```
 - HISAT2 index built with a reference genome, (ribosomal DNA), and ERCC spike-ins 
   - See also [How to build HISAT2 index](#How-to-build-HISAT2-index).
-  - The basecalls directory contents should include the followings:
+  - The HISAT2 index directory contents should include the followings:
 ```
     ├── [basename].1.ht2
     ├── [basename].2.ht2
