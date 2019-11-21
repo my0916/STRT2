@@ -15,7 +15,7 @@ For STRT2.sh
 - [Subread](http://subread.sourceforge.net/)
 
 ## Requirements
-- Illumina BaseCalls files (.bcl). The basecalls directory should be like this:
+- Illumina BaseCalls files (.bcl). The basecalls directory contents should be like this:
 ```
   ├── L001
   ├── L002
