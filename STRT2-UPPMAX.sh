@@ -196,13 +196,15 @@ paste tmp/out <(awk 'NR>1{print $1}' src/barcode.txt) | cut -f 1-4 > tmp/out2 &&
 echo -e ${OUTPUT_NAME}_non-indexed_Lane1.bam"\t"${OUTPUT_NAME}_non-indexed_Lane1"\t" ${OUTPUT_NAME}_non-indexed_Lane1"\t"N >> tmp/out2
 echo -e OUTPUT"\t"SAMPLE_ALIAS"\t"LIBRARY_NAME"\t"BARCODE_1  | cat - tmp/out2 > library.param.lane1 && rm tmp/out2
 
-sed -e "s/Lane1/Lane2/g" library.param.lane1 > library.param.lane2
-sed -e "s/Lane1/Lane3/g" library.param.lane1 > library.param.lane3
-sed -e "s/Lane1/Lane4/g" library.param.lane1 > library.param.lane4
-
+##Number of lanes
+nlanes=`ls -l ${BaseCallsDir_PATH} | grep ^d | wc -l`
+for i in `seq 2 $nlanes`
+do
+sed -e "s/Lane1/Lane${i}/g" library.param.lane1 > library.param.lane${i}
+done
 
 #Convert BCL files to BAM files
-for i in {1..4}
+for i in `seq 1 $nlanes`
 do
 java -Xmx16g -jar $PICARD_HOME/picard.jar ExtractIlluminaBarcodes \
 BASECALLS_DIR=${BaseCallsDir_PATH}/ \
@@ -297,14 +299,11 @@ mkdir tmp/merged
 mkdir tmp/Unaligned_bam
 mv *.bam tmp/Unaligned_bam
 
-#Merging 4 lanes
+#Merging all lanes
 for i in {1..48}
 do
 java -Xmx16g -jar $PICARD_HOME/picard.jar MergeSamFiles \
-I=tmp/UMI/${OUTPUT_NAME}_${i}_Lane1.umi.bam \
-I=tmp/UMI/${OUTPUT_NAME}_${i}_Lane2.umi.bam \
-I=tmp/UMI/${OUTPUT_NAME}_${i}_Lane3.umi.bam \
-I=tmp/UMI/${OUTPUT_NAME}_${i}_Lane4.umi.bam \
+$(printf "I=%s " tmp/UMI/${OUTPUT_NAME}_${i}_Lane*.umi.bam) \
 O=/dev/stdout |
 java -Xmx16g -jar $PICARD_HOME/picard.jar AddOrReplaceReadGroups \
 I=/dev/stdin \
