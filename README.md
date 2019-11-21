@@ -16,10 +16,12 @@ For STRT2.sh
 
 ## Requirements
 - Illumina BaseCalls files (.bcl). The basecalls directory should be like this:
+```
   ├── L001
   ├── L002
   ├── L003
   └── L004
+```
 - HISAT2 index built with a reference genome, (ribosomal DNA), and ERCC spike-ins 
   - See also [How to build HISAT2 index](#How-to-build-HISAT2-index).
   - Note that `[basename].*.ht2`, `[basename].fasta`, and `[basename].dict` are included in the index directory.
