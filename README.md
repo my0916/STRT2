@@ -15,7 +15,7 @@ For STRT2.sh
 - [Subread](http://subread.sourceforge.net/)
 
 ## Requirements
-- Illumina BaseCalls files (.bcl). The number of lanes are determined based on the number of directories in the basecalls directory. Here are 4 lanes: 
+- Illumina BaseCalls files (.bcl). The number of lanes are determined based on the number of directories in the basecalls directory. Here is an example of 4 lanes: 
 ```
   ├── L001
   ├── L002
