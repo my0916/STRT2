@@ -226,6 +226,7 @@ done | sort -k 1,1 > byTFE_out/${OUTPUT_NAME}_annotation.txt
 
 join -1 4 -2 4 -t "$(printf '\011')" <(sort -k 4,4 byTFE_out/${OUTPUT_NAME}_TFE-regions.bed) <(sort -k 4,4 byTFE_out/${OUTPUT_NAME}_peaks.bed) | awk 'BEGIN{OFS="\t"}{print $1,$2,$3,$4,$9,$6}' > byTFE_out/${OUTPUT_NAME}_TFE-region-peak.txt
 join -1 1 -2 1 -t "$(printf '\011')" <(sort -k 1,1 byTFE_out/${OUTPUT_NAME}_annotation.txt) <(sort -k 1,1 byTFE_out/${OUTPUT_NAME}_TFE-region-peak.txt) > byTFE_out/${OUTPUT_NAME}_TFE-region-peak-anno.txt
-byTFE_out/${OUTPUT_NAME}_TFE-region-peak-anno.txt)) <(cat byTFE_out/${OUTPUT_NAME}_byTFE-counts.txt | sed -e '1d' | awk 'NR<2{print $0;next}{print $0| "sort -k 1,1"}') | cut -f-8,13- | awk 'NR<2{print $0;next}{print $0| "sort -k4,4 -k5,5n -k8,8"}' | sed -e "1 s/Geneid/TFE/g" | sed -e "1 s/forTFE\///g" | sed -e "1 s/.output.bam//g" > byTFE_out/${OUTPUT_NAME}_byTFE-counts_annotation.txt
+join -1 1 -2 1 -t "$(printf '\011')" <(echo -e "Geneid""\t""Gene""\t""Annotation""\t""Chr""\t""Start""\t""End""\t""Peak""\t""Strand"| cat - <(sort -k 1,1 byTFE_out/${OUTPUT_NAME}_TFE-region-peak-anno.txt)) <(cat byTFE_out/${OUTPUT_NAME}_byTFE-counts.txt | sed -e '1d' | awk 'NR<2{print $0;next}{print $0| "sort -k 1,1"}') | cut -f-8,13- | awk 'NR<2{print $0;next}{print $0| "sort -k4,4 -k5,5n -k8,8"}' | sed -e "1 s/Geneid/TFE/g" | sed -e "1 s/forTFE\///g" | sed -e "1 s/.output.bam//g" > byTFE_out/${OUTPUT_NAME}_byTFE-counts_annotation.txt
+
 rm byTFE_out/${OUTPUT_NAME}_TFE-region-peak.txt
 rm byTFE_out/${OUTPUT_NAME}_TFE-region-peak-anno.txt
