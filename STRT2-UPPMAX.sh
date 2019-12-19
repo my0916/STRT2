@@ -25,7 +25,7 @@ EOS
 
 function version() {
   cat << EOS >&2
-STRT2-NextSeq-automated-pipeline ver2019.11.11
+STRT2-NextSeq-automated-pipeline ver2019.11.21
 EOS
   exit 1
 }
@@ -344,10 +344,10 @@ elif [[ ${ANNO_VALUE} =  "ens" ]]; then
   gunzip src/ensemblToGeneName.txt.gz
   join -1 1 -2 2 -t $'\t' <(sort -k 1,1 src/ensemblToGeneName.txt) <(sort -k 2,2 src/ensGene.txt) > src/common.txt
   join -1 1 -2 2 -t $'\t' -v 2 <(sort -k 1,1 src/ensemblToGeneName.txt) <(sort -k 2,2 src/ensGene.txt) | awk 'BEGIN{OFS="\t"}{print $2,$13,$1,$1=$2="",$0}' | cut -f 1-3,7- > src/no-genename.txt
+  rm src/ensGene.txt && rm src/ensemblToGeneName.txt
   cat src/common.txt src/no-genename.txt > src/ens-genes.txt
   rm src/common.txt && rm src/no-genename.txt
   ruby ruby/ENSEMBL-extract.rb
-  rm src/ens-genes.txt
   shift 2
 elif [[ ${ANNO_VALUE} =  "kg" ]]; then
   echo "Downloading the UCSC KnownGenes annotation data..."
@@ -358,7 +358,6 @@ elif [[ ${ANNO_VALUE} =  "kg" ]]; then
   join  -1 1 -2 1 -t $'\t' <(sort -k 1,1 src/kgXref.txt | cut -f 1-5) <(sort -k 1,1 src/knownGene.txt) > src/knowngene-names.txt
   rm src/knownGene.txt && rm src/kgXref.txt
   ruby ruby/KnownGenes-extract.rb
-  rm src/knowngene-names.txt
   shift 2
 elif [[ ${ANNO_VALUE} =  "ref" ]]; then
   echo "Downloading the NCBI RefSeq annotation data..."
@@ -367,7 +366,7 @@ elif [[ ${ANNO_VALUE} =  "ref" ]]; then
   ruby ruby/RefSeq-extract.rb
   shift 2
 else
-  usage
+  echo "Something is wrong with the annotation data file."
   exit 1
 fi
 
