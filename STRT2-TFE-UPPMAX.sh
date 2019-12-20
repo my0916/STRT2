@@ -109,7 +109,7 @@ rm byTFE_tmp/${OUTPUT_NAME}_firstExons-rev.bed
 
 #Spike-ins were not annotated as TFE with numbers
 sort -k 1,1 -k 2,2n byTFE_tmp/${OUTPUT_NAME}_firstExons.bed |awk '{if($6=="+"){print $0}}' | grep -e ERCC -e NIST \
-| mergeBed -s -c 6 -o distinct | bedtools groupby -i stdin -g 1  -c 1,2,3,4 -o first \ 
+| mergeBed -s -c 6 -o distinct | bedtools groupby -i stdin -g 1  -c 1,2,3,4 -o first \
 | awk 'BEGIN{OFS="\t"}{print $2,$3,$4,"RNA_SPIKE_"$2,0,$5}' > byTFE_tmp/${OUTPUT_NAME}_spike-firstExons.bed 
 sort -k 1,1 -k 2,2n byTFE_tmp/${OUTPUT_NAME}_firstExons.bed | mergeBed -s -c 6 -o distinct \
 | grep -v ERCC| grep -v NIST | awk 'BEGIN{OFS="\t"}{print $1,$2,$3,"TFE"NR,0,$4}' > byTFE_tmp/${OUTPUT_NAME}_nonspike-firstExons.bed 
