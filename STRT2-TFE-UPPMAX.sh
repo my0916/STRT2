@@ -125,7 +125,6 @@ mkdir bedGraph
 for file in *.output.bam
 do
 name=$(basename $file .output.bam)
-#samtools index $file
 Spike=$(samtools view -F 256 -F 1024 -F 4 $file |grep -e ERCC -e NIST| wc -l)
 samtools view -b -F 256 -F 1024 -F 4 $file | bamToBed -i stdin\
 | gawk 'BEGIN{ FS="\t"; OFS=" " }{if($6=="+"){print $1,$2,$2+1,".",0,"+"}else{print $1,$3-1,$3,".",0,"-"}}'\
@@ -134,7 +133,6 @@ samtools view -b -F 256 -F 1024 -F 4 $file | bamToBed -i stdin\
 | gawk 'BEGIN{ FS=" "; OFS="\t" }{print $2,$3,$4,$5,$1/'$Spike',$7}'\
 | pigz -c > bedGraph/$name.bedGraph.gz
 done
-#mkdir bai && mv *.bam.bai bai
 gunzip -c bedGraph/*.bedGraph.gz | sort -k 1,1 -k 2,2n | mergeBed -s -c 4,5,6 -o distinct,sum,distinct -d -1  > ../byTFE_tmp/${OUTPUT_NAME}_fivePrimes.bed
 cd ../
 intersectBed -wa -wb -s -a byTFE_tmp/${OUTPUT_NAME}_TFE-regions.bed -b byTFE_tmp/${OUTPUT_NAME}_fivePrimes.bed \
