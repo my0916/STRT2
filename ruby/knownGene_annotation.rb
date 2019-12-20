@@ -96,7 +96,7 @@ File.open("src/knowngene-names.txt", "r")  do |infp|
                     0.upto(lefts.length-1) { |i|
                         left = lefts[i].to_i
                         right = rights[i].to_i
-                        if left < cdsright && cdsright <= right
+                        if left < cdsright && cdsright < right
                             outfp.puts [cols[5], cdsright, right, "#{cols[4]}|#{cols[0]}", 0, '+'].join("\t")
                             elsif cdsright < left
                             outfp.puts [cols[5], left, right, "#{cols[4]}|#{cols[0]}", 0, '+'].join("\t")
@@ -107,7 +107,7 @@ File.open("src/knowngene-names.txt", "r")  do |infp|
                     (rights.length-1).downto(0) { |i|
                         left = lefts[i].to_i
                         right = rights[i].to_i
-                        if left <= cdsleft && cdsleft < right
+                        if left < cdsleft && cdsleft < right
                             outfp.puts [cols[5], left, cdsleft, "#{cols[4]}|#{cols[0]}", 0, '-'].join("\t")
                             elsif right < cdsleft
                             outfp.puts [cols[5], left, right, "#{cols[4]}|#{cols[0]}", 0, '-'].join("\t")
