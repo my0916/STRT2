@@ -7,7 +7,7 @@ A pipeline for the analysis of STRT2 RNA-sequencing outputs from NextSeq.
 git clone https://github.com/my0916/STRT2.git
 ```
 ## Dependencies
-For STRT2.sh
+For STRT2.sh & STRT2-UPPMAX.sh
 - [Picard](https://broadinstitute.github.io/picard/)
 - [HISAT2](https://ccb.jhu.edu/software/hisat2/index.shtml)
 - [SAMtools](http://samtools.sourceforge.net/)
