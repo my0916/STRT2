@@ -4,9 +4,8 @@ PROGNAME="$( basename $0 )"
 #Usage
 function usage() {
   cat << EOS >&2
-Usage: ${PROGNAME} [-o <output>] 
+Usage: ${PROGNAME}
 Options:
-  -o, --out               Output file name. (default: OUTPUT)
   -c, --coverage          Minimum read coverage allowed for the predicted transcripts. (default: 5)
   -l, --length            Minimum length allowed for the predicted transcripts. (default: 74)
   -h, --help              Show usage.
@@ -23,23 +22,12 @@ EOS
 }
 
 #Default parameters
-OUTPUT_NAME=OUTPUT
 cover_VALUE=5
 len_VALUE=74
-
 
 PARAM=()
 for opt in "$@"; do
     case "${opt}" in
-    '-o' | '--out' )
-            if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
-                echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
-                exit 1
-            fi
-            OUTNAME=true
-            OUTPUT_NAME="$2"
-            shift 2
-            ;;
     '-c' | '--coverage' )
             if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
                 echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
@@ -90,6 +78,8 @@ module load ruby/2.6.2
 mkdir byTFE_tmp
 mkdir byTFE_out
 mkdir byTFE_tmp/class
+
+OUTPUT_NAME=$(basename out/Output_bam/*_1.output.bam _1.output.bam)
 
 #Sample classification
 while read row; do
