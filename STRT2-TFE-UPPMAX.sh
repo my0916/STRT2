@@ -135,10 +135,14 @@ cat byTFE_tmp/class/*/firstExons.bed | sort -k 1,1 -k 2,2n |awk '{if($6=="+"){pr
 cat byTFE_tmp/class/*/firstExons.bed | sort -k 1,1 -k 2,2n | mergeBed -s -c 6 -o distinct \
 | grep -v ERCC| grep -v NIST | awk 'BEGIN{OFS="\t"}{print $1,$2,$3,"TFE"NR,0,$4}' > byTFE_tmp/${OUTPUT_NAME}_nonspike-firstExons_class.bed 
 cat byTFE_tmp/${OUTPUT_NAME}_spike-firstExons_class.bed  byTFE_tmp/${OUTPUT_NAME}_nonspike-firstExons_class.bed > byTFE_tmp/${OUTPUT_NAME}_TFE-regions.bed
-rm byTFE_tmp/${OUTPUT_NAME}_spike-firstExons_class.bed && rm byTFE_tmp/${OUTPUT_NAME}_nonspike-firstExons_class.bed   
+rm byTFE_tmp/${OUTPUT_NAME}_spike-firstExons_class.bed && rm byTFE_tmp/${OUTPUT_NAME}_nonspike-firstExons_class.bed
 
+#Counting
+awk '{print $4 "\t" $1 "\t" $2+1 "\t" $3 "\t" $6}' byTFE_tmp/${OUTPUT_NAME}_TFE-regions.bed > byTFE_tmp/${OUTPUT_NAME}_TFE-regions.saf
+featureCounts -T 8 -s 1 --largestOverlap --ignoreDup --primary -a byTFE_tmp/${OUTPUT_NAME}_TFE-regions.saf -F SAF -o byTFE_tmp/${OUTPUT_NAME}_byTFE-counts.txt byTFE_tmp/class/*/*.output.bam
+
+#Peaks
 cat byTFE_tmp/class/*/fivePrimes.bed | sort -k 1,1 -k 2,2n | mergeBed -s -c 4,5,6 -o distinct,sum,distinct -d -1  > byTFE_tmp/${OUTPUT_NAME}_fivePrimes.bed
-
 intersectBed -wa -wb -s -a byTFE_tmp/${OUTPUT_NAME}_TFE-regions.bed -b byTFE_tmp/${OUTPUT_NAME}_fivePrimes.bed \
   | cut -f 4,7,8,9,11,12 \
   | gawk 'BEGIN{ FS="\t"; OFS="\t" }{p=$6=="+"?$3:-$4;print $2,$3,$4,$1,$5,$6,p,$1}' \
@@ -238,6 +242,7 @@ join -1 1 -2 1 -t "$(printf '\011')" <(sort -k 1,1 byTFE_out/${OUTPUT_NAME}_anno
 join -1 1 -2 1 -t "$(printf '\011')" <(echo -e "Geneid""\t""Gene""\t""Annotation""\t""Chr""\t""Start""\t""End""\t""Peak""\t""Strand" \
 | cat - <(sort -k 1,1 byTFE_tmp/${OUTPUT_NAME}_TFE-region-peak-anno.txt)) <(cat byTFE_tmp/${OUTPUT_NAME}_byTFE-counts.txt | sed -e '1d'  \
 | awk 'NR<2{print $0;next}{print $0| "sort -k 1,1"}') | cut -f-8,13- | awk 'NR<2{print $0;next}{print $0| "sort -k4,4 -k5,5n -k8,8"}'  \
-| sed -e "1 s/Geneid/TFE/g" | sed -e "1 s/forTFE\///g" | sed -e "1 s/.output.bam//g" > byTFE_out/${OUTPUT_NAME}_byTFE-counts_annotation.txt
+| sed -e "1 s/Geneid/TFE/g" | sed -e "1 s/byTFE_tmp\/class\///g" | sed -e "1 s/.output.bam//g" | sed -e "1 s/\//\|/g"\
+> byTFE_out/${OUTPUT_NAME}_byTFE-counts_annotation.txt
 
-rm byTFE_tmp/${OUTPUT_NAME}_TF E-region-peak.txt &&rm byTFE_tmp/${OUTPUT_NAME}_TFE-region-peak-anno.txt
+rm byTFE_tmp/${OUTPUT_NAME}_TFE-region-peak.txt &&rm byTFE_tmp/${OUTPUT_NAME}_TFE-region-peak-anno.txt
