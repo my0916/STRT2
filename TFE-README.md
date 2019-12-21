@@ -24,7 +24,7 @@ TFE (transcript far 5'-end)-based analysis employed in [Töhönen et al. 2015](h
      | 8 | classB | 
      | 9 | classC | 
     
-  In this case, transcript assembly is performed using samples 1, 4, 7 for classA, 2, 5, 8 for classB, and 3, 6, 9 for classC. Then first exons are collected from all thse 3 classes and annotated as TFEs.  
+  In this case, transcript assembly is performed using samples 1, 4, 7 for classA, 2, 5, 8 for classB, and 3, 6, 9 for classC. Then first exons are collected from all these 3 classes and annotated as TFEs.  
   
 ## Example usage
 ```
