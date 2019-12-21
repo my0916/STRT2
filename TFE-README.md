@@ -12,6 +12,8 @@ TFE (transcript far 5'-end)-based analysis employed in [Töhönen et al. 2015](h
 - Source files (in `src` directory)
   - `TFEclass.txt` : Sample classification with barcode name (1-48) which is used for the transcript assembly. Please set "NA" for those samples that are not used for further analysis (e.g. negative controls or outlier samples). In the default settings, all samples are classfied as the same class.
   ### Example
+ 　 | | |
+　　 |-|-|
     | 1 | classA | 
     | 2 | classB | 
     | 3 | classC | 
