@@ -12,6 +12,7 @@ TFE (transcript far 5'-end)-based analysis employed in [Töhönen et al. 2015](h
 - Source files (in `src` directory)
   - `TFEclass.txt` : Sample classification with barcode name (1-48) which is used for the transcript assembly. Please set "NA" for those samples that are not used for further analysis (e.g. negative controls or outlier samples). In the default settings, all samples are classfied as the same class.
   ### Example
+  
   | | | |
 |-|-|-|
 |__Bold Key__| Value1 |
@@ -29,6 +30,7 @@ TFE (transcript far 5'-end)-based analysis employed in [Töhönen et al. 2015](h
     | 7 | classA | 
     | 8 | classB | 
     | 9 | classC | 
+    
   In this case, transcript assembly is performed using samples 1, 4, 7 for classA, 2, 5, 8 for classB, and 3, 6, 9 for classC. Then first exons are collected from all thse 3 classes and annotated as TFEs.  
   
 ## Example usage
