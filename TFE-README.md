@@ -50,5 +50,5 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-TFE-UPPMAX.sh
 Outputs are provided in `byTFE_out` directory.
 
 - __`OUTPUT`\_byTFE-counts_annotation.txt__ <br>
-Read count table output from featureCounts with genomic annotations. Note that the order of samples (columns) are based on `TFEclass.txt` (different from byGene-`OUTPUT`\_byGene-counts.txt).
+Read count table output from featureCounts with genomic annotations. Note that the order of samples (columns) are based on `TFEclass.txt` (different from `OUTPUT`\_byGene-counts.txt).
 
