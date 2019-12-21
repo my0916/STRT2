@@ -17,7 +17,7 @@ EOS
 
 function version() {
   cat << EOS >&2
-STRT2-NextSeq-automated-pipeline_TFE-based ver2019.12.19
+STRT2-NextSeq-automated-pipeline_TFE-based ver2019.12.21
 EOS
   exit 1
 }
@@ -89,59 +89,73 @@ module load ruby/2.6.2
 
 mkdir byTFE_tmp
 mkdir byTFE_out
+mkdir byTFE_tmp/class
 
-#Merge all BAMs, remove duplicated, non-primary, unmapped reads, and sort
-samtools merge -@ 8 - forTFE/*.bam | samtools view -@ 8 -b -F 256 -F 1024 -F 4 - | samtools sort -@ 8 -o byTFE_tmp/${OUTPUT_NAME}_merged.bam
+#Sample classification
+while read row; do
+  column1=`echo ${row} | cut -d ' ' -f 1`
+  column2=`echo ${row} | cut -d ' ' -f 2`
+  if [[ $column2 != "NA" ]]; then
+    mkdir -p byTFE_tmp/class/${column2}
+    cp out/Output_bam/${OUTPUT_NAME}_${column1}.output.bam byTFE_tmp/class/${column2}
+  else
+    :
+  fi
+done < src/TFEclass.txt
 
-#Assembly with Stringtie 
-stringtie byTFE_tmp/${OUTPUT_NAME}_merged.bam -o byTFE_tmp/${OUTPUT_NAME}_stringtie.gtf -p 8 -m ${len_VALUE} --fr -l ${OUTPUT_NAME} -c ${cover_VALUE}
-
-#Extract 1st-exon
-cat byTFE_tmp/${OUTPUT_NAME}_stringtie.gtf | awk '{if($7=="+"||$7=="."){print $0}}'| grep 'exon_number "1"' \
-| awk 'OFS =  "\t" {print $1,$4-1,$5,$12,"0",$7}' | sed -e 's/"//g'| sed -e 's/;//g' > byTFE_tmp/${OUTPUT_NAME}_firstExons-fwd.bed 
-cat byTFE_tmp/${OUTPUT_NAME}_stringtie.gtf | awk 'BEGIN{OFS="\t"}{if($7=="-" && $3=="exon"){print $1,$4-1,$5,$12,"0",$7}}' \
-| sed -e 's/"//g'| sed -e 's/;//g' | sort -k 4,4 -k 1,1 -k 2,2n | bedtools groupby -i stdin -g 4  -c 1,2,3,4,5,6 -o last \
-| awk 'BEGIN{OFS="\t"}{print $2,$3,$4,$5,$6,$7}' > byTFE_tmp/${OUTPUT_NAME}_firstExons-rev.bed
-
-cat byTFE_tmp/${OUTPUT_NAME}_firstExons-fwd.bed  byTFE_tmp/${OUTPUT_NAME}_firstExons-rev.bed | sortBed -i stdin > byTFE_tmp/${OUTPUT_NAME}_firstExons.bed
-rm byTFE_tmp/${OUTPUT_NAME}_firstExons-fwd.bed 
-rm byTFE_tmp/${OUTPUT_NAME}_firstExons-rev.bed
-
-#Spike-ins were not annotated as TFE with numbers
-sort -k 1,1 -k 2,2n byTFE_tmp/${OUTPUT_NAME}_firstExons.bed |awk '{if($6=="+"){print $0}}' | grep -e ERCC -e NIST \
-| mergeBed -s -c 6 -o distinct | bedtools groupby -i stdin -g 1  -c 1,2,3,4 -o first \
-| awk 'BEGIN{OFS="\t"}{print $2,$3,$4,"RNA_SPIKE_"$2,0,$5}' > byTFE_tmp/${OUTPUT_NAME}_spike-firstExons.bed 
-sort -k 1,1 -k 2,2n byTFE_tmp/${OUTPUT_NAME}_firstExons.bed | mergeBed -s -c 6 -o distinct \
-| grep -v ERCC| grep -v NIST | awk 'BEGIN{OFS="\t"}{print $1,$2,$3,"TFE"NR,0,$4}' > byTFE_tmp/${OUTPUT_NAME}_nonspike-firstExons.bed 
-cat byTFE_tmp/${OUTPUT_NAME}_spike-firstExons.bed  byTFE_tmp/${OUTPUT_NAME}_nonspike-firstExons.bed > byTFE_tmp/${OUTPUT_NAME}_TFE-regions.bed
-
-#Counting
-awk '{print $4 "\t" $1 "\t" $2+1 "\t" $3 "\t" $6}' byTFE_tmp/${OUTPUT_NAME}_TFE-regions.bed > byTFE_tmp/${OUTPUT_NAME}_TFE-regions.saf
-featureCounts -T 8 -s 1 --largestOverlap --ignoreDup --primary -a byTFE_tmp/${OUTPUT_NAME}_TFE-regions.saf -F SAF -o byTFE_tmp/${OUTPUT_NAME}_byTFE-counts.txt forTFE/*.bam
-
-#Peaks
-cd forTFE
-mkdir bedGraph
-for file in *.output.bam
+classes=`find byTFE_tmp/class/* -type d` 
+for class in $classes;
 do
-name=$(basename $file .output.bam)
-Spike=$(samtools view -F 256 -F 1024 -F 4 $file |grep -e ERCC -e NIST| wc -l)
-samtools view -b -F 256 -F 1024 -F 4 $file | bamToBed -i stdin\
-| gawk 'BEGIN{ FS="\t"; OFS=" " }{if($6=="+"){print $1,$2,$2+1,".",0,"+"}else{print $1,$3-1,$3,".",0,"-"}}'\
-| sort -k 1,1 -k 2,2n\
-| uniq -c\
-| gawk 'BEGIN{ FS=" "; OFS="\t" }{print $2,$3,$4,$5,$1/'$Spike',$7}'\
-| pigz -c > bedGraph/$name.bedGraph.gz
+CLASS_NAME=$(basename $class byTFE_tmp/class/)
+  #Merge all BAMs, remove duplicated, non-primary, unmapped reads, and sort
+  samtools merge -@ 8 - $class/*.bam | samtools view -@ 8 -b -F 256 -F 1024 -F 4 - | samtools sort -@ 8 -o $class/merged.bam
+
+  #Assembly with Stringtie 
+  stringtie $class/merged.bam -o $class/stringtie.gtf -p 8 -m ${len_VALUE} --fr -l ${OUTPUT_NAME}.${CLASS_NAME} -c ${cover_VALUE}
+
+  #Extract 1st-exon
+  cat $class/stringtie.gtf | awk '{if($7=="+"||$7=="."){print $0}}'| grep 'exon_number "1"' \
+  | awk 'OFS =  "\t" {print $1,$4-1,$5,$12,"0",$7}' | sed -e 's/"//g'| sed -e 's/;//g' > $class/firstExons-fwd.bed 
+  cat $class/stringtie.gtf | awk 'BEGIN{OFS="\t"}{if($7=="-" && $3=="exon"){print $1,$4-1,$5,$12,"0",$7}}' \
+  | sed -e 's/"//g'| sed -e 's/;//g' | sort -k 4,4 -k 1,1 -k 2,2n | bedtools groupby -i stdin -g 4  -c 1,2,3,4,5,6 -o last \
+  | awk 'BEGIN{OFS="\t"}{print $2,$3,$4,$5,$6,$7}' > $class/firstExons-rev.bed
+  cat $class/firstExons-fwd.bed  $class/firstExons-rev.bed | sortBed -i stdin > $class/firstExons.bed
+  rm $class/firstExons-fwd.bed && rm $class/firstExons-rev.bed
+
+  #Fiveprimes for peak detection
+  mkdir $class/bedGraph
+  for file in $class/*.output.bam
+  do
+  name=$(basename $file .output.bam)
+  Spike=$(samtools view -F 256 -F 1024 -F 4 $file |grep -e ERCC -e NIST| wc -l)
+  samtools view -b -F 256 -F 1024 -F 4 $file | bamToBed -i stdin\
+  | gawk 'BEGIN{ FS="\t"; OFS=" " }{if($6=="+"){print $1,$2,$2+1,".",0,"+"}else{print $1,$3-1,$3,".",0,"-"}}'\
+  | sort -k 1,1 -k 2,2n\
+  | uniq -c\
+  | gawk 'BEGIN{ FS=" "; OFS="\t" }{print $2,$3,$4,$5,$1/'$Spike',$7}'\
+  | pigz -c > $class/bedGraph/$name.bedGraph.gz
+  done
+  gunzip -c $class/bedGraph/*.bedGraph.gz | sort -k 1,1 -k 2,2n | mergeBed -s -c 4,5,6 -o distinct,sum,distinct -d -1  > $class/fivePrimes.bed
 done
-gunzip -c bedGraph/*.bedGraph.gz | sort -k 1,1 -k 2,2n | mergeBed -s -c 4,5,6 -o distinct,sum,distinct -d -1  > ../byTFE_tmp/${OUTPUT_NAME}_fivePrimes.bed
-cd ../
+
+#TFE annotation
+cat byTFE_tmp/class/*/firstExons.bed | sort -k 1,1 -k 2,2n |awk '{if($6=="+"){print $0}}' | grep -e ERCC -e NIST \
+| mergeBed -s -c 6 -o distinct | bedtools groupby -i stdin -g 1  -c 1,2,3,4 -o first \
+| awk 'BEGIN{OFS="\t"}{print $2,$3,$4,"RNA_SPIKE_"$2,0,$5}' > byTFE_tmp/${OUTPUT_NAME}_spike-firstExons_class.bed 
+cat byTFE_tmp/class/*/firstExons.bed | sort -k 1,1 -k 2,2n | mergeBed -s -c 6 -o distinct \
+| grep -v ERCC| grep -v NIST | awk 'BEGIN{OFS="\t"}{print $1,$2,$3,"TFE"NR,0,$4}' > byTFE_tmp/${OUTPUT_NAME}_nonspike-firstExons_class.bed 
+cat byTFE_tmp/${OUTPUT_NAME}_spike-firstExons_class.bed  byTFE_tmp/${OUTPUT_NAME}_nonspike-firstExons_class.bed > byTFE_tmp/${OUTPUT_NAME}_TFE-regions.bed
+rm byTFE_tmp/${OUTPUT_NAME}_spike-firstExons_class.bed && rm byTFE_tmp/${OUTPUT_NAME}_nonspike-firstExons_class.bed   
+
+cat byTFE_tmp/class/*/fivePrimes.bed | sort -k 1,1 -k 2,2n | mergeBed -s -c 4,5,6 -o distinct,sum,distinct -d -1  > byTFE_tmp/${OUTPUT_NAME}_fivePrimes.bed
+
 intersectBed -wa -wb -s -a byTFE_tmp/${OUTPUT_NAME}_TFE-regions.bed -b byTFE_tmp/${OUTPUT_NAME}_fivePrimes.bed \
-| cut -f 4,7,8,9,11,12 \
-| gawk 'BEGIN{ FS="\t"; OFS="\t" }{p=$6=="+"?$3:-$4;print $2,$3,$4,$1,$5,$6,p,$1}' \
-| sort -k 8,8 -k 5,5gr -k 7,7g \
-| uniq -f 7 \
-| cut -f 1-6 \
-| sort -k 1,1 -k 2,2n > byTFE_out/${OUTPUT_NAME}_peaks.bed
+  | cut -f 4,7,8,9,11,12 \
+  | gawk 'BEGIN{ FS="\t"; OFS="\t" }{p=$6=="+"?$3:-$4;print $2,$3,$4,$1,$5,$6,p,$1}' \
+  | sort -k 8,8 -k 5,5gr -k 7,7g \
+  | uniq -f 7 \
+  | cut -f 1-6 \
+  | sort -k 1,1 -k 2,2n > byTFE_out/${OUTPUT_NAME}_peaks.bed
 
 #Annotation of peaks
 mkdir src/anno
@@ -170,7 +184,6 @@ intersectBed -s -wa -wb -a byTFE_out/${OUTPUT_NAME}_peaks.bed -b src/anno/Coding
 |awk -F " " '{print $1"\t"$2","$3}' \
 |awk -F "\t" '{if(a[$1])a[$1]=a[$1]":"$2; else a[$1]=$2;}END{for (i in a)print i, a[i];}' OFS="\t" \
 |awk -v 'OFS=\t' '{print $1,$2,"Coding_5UTR"}' | sort -k 1,1 > src/anno/peaks_class1.txt
-
 
 intersectBed -s -wa -wb -a byTFE_out/${OUTPUT_NAME}_peaks.bed -b src/anno/Coding-5UTR.bed -v > src/anno/peaks_nonClass1.bed
 intersectBed -s -wa -wb -a src/anno/peaks_nonClass1.bed -b src/anno/Coding-up_trimmed.bed | awk -F "\t" '{print($4,$10)}' \
@@ -237,6 +250,4 @@ join -1 1 -2 1 -t "$(printf '\011')" <(echo -e "Geneid""\t""Gene""\t""Annotation
 | awk 'NR<2{print $0;next}{print $0| "sort -k 1,1"}') | cut -f-8,13- | awk 'NR<2{print $0;next}{print $0| "sort -k4,4 -k5,5n -k8,8"}'  \
 | sed -e "1 s/Geneid/TFE/g" | sed -e "1 s/forTFE\///g" | sed -e "1 s/.output.bam//g" > byTFE_out/${OUTPUT_NAME}_byTFE-counts_annotation.txt
 
-
-rm byTFE_tmp/${OUTPUT_NAME}_TFE-region-peak.txt
-rm byTFE_tmp/${OUTPUT_NAME}_TFE-region-peak-anno.txt
+rm byTFE_tmp/${OUTPUT_NAME}_TF E-region-peak.txt &&rm byTFE_tmp/${OUTPUT_NAME}_TFE-region-peak-anno.txt
