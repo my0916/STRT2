@@ -386,8 +386,8 @@ rm src/proxup_trimmed.bed
 
 #Quality check
 cd out
-echo -e Barcode"\t"Qualified reads"\t"Total reads"\t"Redundancy"\t"Mapped reads"\t"Mapping rate\
-"\t"Spikein reads"\t"Spikein-5end reads"\t"Spikein-5end rate"\t"Coding reads"\t"Coding-5end reads"\t"Coding-5end rate > ${OUTPUT_NAME}-QC.txt
+echo -e Barcode"\t"Qualified_reads"\t"Total_reads"\t"Redundancy"\t"Mapped_reads"\t"Mapping_rate\
+"\t"Spikein_reads"\t"Spikein-5end_reads"\t"Spikein-5end_rate"\t"Coding_reads"\t"Coding-5end_reads"\t"Coding-5end_rate > ${OUTPUT_NAME}-QC.txt
 
 for file in *.output.bam
 do
