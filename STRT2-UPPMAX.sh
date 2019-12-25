@@ -347,7 +347,7 @@ elif [[ ${ANNO_VALUE} =  "ens" ]]; then
   rm src/ensGene.txt && rm src/ensemblToGeneName.txt
   cat src/common.txt src/no-genename.txt > src/ens-genes.txt
   rm src/common.txt && rm src/no-genename.txt
-  ruby ruby/ENSEMBL-extract.rb
+  ruby bin/ENSEMBL-extract.rb
   shift 2
 elif [[ ${ANNO_VALUE} =  "kg" ]]; then
   echo "Downloading the UCSC KnownGenes annotation data..."
@@ -357,13 +357,13 @@ elif [[ ${ANNO_VALUE} =  "kg" ]]; then
   gunzip src/kgXref.txt.gz
   join  -1 1 -2 1 -t $'\t' <(sort -k 1,1 src/kgXref.txt | cut -f 1-5) <(sort -k 1,1 src/knownGene.txt) > src/knowngene-names.txt
   rm src/knownGene.txt && rm src/kgXref.txt
-  ruby ruby/KnownGenes-extract.rb
+  ruby bin/KnownGenes-extract.rb
   shift 2
 elif [[ ${ANNO_VALUE} =  "ref" ]]; then
   echo "Downloading the NCBI RefSeq annotation data..."
   curl -o src/refGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/refGene.txt.gz
   gunzip src/refGene.txt.gz
-  ruby ruby/RefSeq-extract.rb
+  ruby bin/RefSeq-extract.rb
   shift 2
 else
   echo "Something is wrong with the annotation data file."
