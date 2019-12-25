@@ -414,7 +414,7 @@ mkdir Output_bai && mv *.bam.bai Output_bai
 mkdir Output_bam && mv *.bam Output_bam
 
 #Plotting
-module load R
+module load R/3.6.1
 module load R_packages/3.6.1
 
 R CMD BATCH --slave --vanilla  ../bin/QC-plot.R QC-plot.R.log
