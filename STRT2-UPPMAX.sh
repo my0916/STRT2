@@ -412,3 +412,9 @@ featureCounts -T 8 -s 1 --largestOverlap --ignoreDup --primary -a ../src/5end-re
 
 mkdir Output_bai && mv *.bam.bai Output_bai
 mkdir Output_bam && mv *.bam Output_bam
+
+#Plotting
+module load R
+module load R_packages/3.6.1
+
+R CMD BATCH --slave --vanilla  ../bin/QC-plot.R QC-plot.R.log
