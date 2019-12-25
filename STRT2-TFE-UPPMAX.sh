@@ -155,15 +155,15 @@ intersectBed -wa -wb -s -a byTFE_tmp/${OUTPUT_NAME}_TFE-regions.bed -b byTFE_tmp
 mkdir src/anno
 if test -f src/ens-genes.txt && test ! -f src/knowngene-names.txt && test ! -f src/refGene.txt; then
   echo "Annotation with Ensembl"
-  ruby ruby/ensGene_annotation.rb
+  ruby bin/ensGene_annotation.rb
   shift 2
 elif test ! -f src/ens-genes.txt && test -f src/knowngene-names.txt && test ! -f src/refGene.txt; then
   echo "Annotation with UCSC KnownGenes"
-  ruby ruby/knownGene_annotation.rb
+  ruby bin/knownGene_annotation.rb
   shift 2
 elif test ! -f src/ens-genes.txt && test ! -f src/knowngene-names.txt && test -f src/refGene.txt; then
   echo "Annotation with NCBI RefSeq"
-  ruby ruby/refGene_annotation.rb
+  ruby bin/refGene_annotation.rb
   shift 2
 else
   echo "Something is wrong with the annotation data file."
