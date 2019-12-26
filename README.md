@@ -108,7 +108,7 @@ Quality check report for all samples.
 
 - __`OUTPUT`-QC-plots.pdf__ <br>
 Quality check report by boxplots.
-`Spikein_reads`, `Mapped / Spikein`, `Spikein-5end_rate`, and `Coding-5end_rate` are shown. Barcode numbers of outliers are marked with red characters. 
+`Spikein_reads`, `Mapped / Spikein`, `Spikein-5end_rate`, and `Coding-5end_rate` are shown for all samples. Barcode numbers of outliers are marked with red characters. 
 
 - __`OUTPUT`\_byGene-counts.txt__ <br>
 Read count table output from featureCounts.
