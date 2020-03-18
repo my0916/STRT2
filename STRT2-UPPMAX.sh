@@ -195,7 +195,7 @@ mkdir tmp
 mkdir out
 
 #Preparation for barcodes
-head -n `expr $BARCODE_NUMBER \+ 1` src/barcode_default.txt > barcode.txt
+head -n `expr $BARCODE_NUMBER \+ 1` src/barcode_default.txt > src/barcode.txt
 
 for i in `seq 1 $BARCODE_NUMBER`
 do
