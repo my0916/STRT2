@@ -38,7 +38,7 @@ For STRT2.sh & STRT2-UPPMAX.sh
     └── [basename].dict
 ```
 - Source files (in `src` directory)
-  - `barcode_default.txt` : Barcode sequence with barcode name (1-48).
+  - `barcode.txt` : Barcode sequence with barcode name. Please modify if you used different barcodes.
   - `ERCC.bed` : 5'-end 50 nt region of ERCC spike-ins ([SRM2374](https://www-s.nist.gov/srmors/view_detail.cfm?srm=2374)) for annotation and quality check.
 
 ## Example usage
@@ -70,7 +70,6 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o STRT2LIB 
    | `-c, --center ` | CENTER | The name of the sequencing center that produced the reads.<br>Required for the the Picard IlluminaBasecallsToSam program.|
    | `-r, --run` | RUNBARCODE | The barcode of the run. Prefixed to read names.<br>Required for the the Picard IlluminaBasecallsToSam program.|
    | `-s, --structure` | 8M3S74T6B | Read structure.<br>Required for the the Picard IlluminaBasecallsToSam program.<br>Details are described [here](https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_illumina_IlluminaBasecallsToSam.php#--READ_STRUCTURE).|
-   | `-n, --number` | 48 | Number of barcodes (samples) when you use the original `src/barcode_default.txt`.<br> If you specify '40' here, barcodes 1-40 are used.|
    | `-d, --dta` | | Add `-d, --dta` (downstream-transcriptome-assembly) if you plan to perform [TFE-based analysis](https://github.com/my0916/STRT2/blob/master/TFE-README.md).<br>Please note that this leads to fewer alignments with short-anchors.|
    | `-h, --help`| | Show usage.|
    | `-v, --version`| | Show version.|
@@ -94,7 +93,7 @@ Quality check report for all samples.
 
    | Column |Value|
    | ------------- | ------------- |
-   |`Barcode` | Sample name. `OUTPUT` with numbers (1-48)|
+   |`Barcode` | Sample name. `OUTPUT` with numbers|
    |`Qualified_reads` | Primary aligned read count|	
    |`Total_reads`| Read count without redundant (duplicate) reads|
    |`Redundancy` | Qualified reads / Total reads| 
