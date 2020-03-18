@@ -16,6 +16,7 @@ Options:
   -c, --center            The name of the sequencing center that produced the reads. (default: CENTER)
   -r, --run               The barcode of the run. Prefixed to read names. (default: RUNBARCODE)
   -s, --structure         Read structure (default: 8M3S74T6B)
+  -n, --number            Number of barcodes (samples) (default: 48)
   -d, --dta               Downstream-transcriptome-assembly for HISAT2, which is useful for TFE-based analysis but leads to fewer alignments with short-anchors.
   -h, --help              Show usage.
   -v, --version           Show version.
@@ -25,7 +26,7 @@ EOS
 
 function version() {
   cat << EOS >&2
-STRT2-NextSeq-automated-pipeline ver2019.11.21
+STRT2-NextSeq-automated-pipeline ver2020.3.17
 EOS
   exit 1
 }
@@ -36,6 +37,7 @@ run_VALUE=RUNBARCODE
 center_VALUE=CENTER
 READ_STRUCTURE=8M3S74T6B
 IF_DTA=false
+BARCODE_NUMBER=48
 
 PARAM=()
 for opt in "$@"; do
@@ -122,7 +124,6 @@ for opt in "$@"; do
                 echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
                 exit 1
             fi
-            center=true
             center_VALUE="$2"
             shift 2
             ;;
@@ -131,7 +132,6 @@ for opt in "$@"; do
                 echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
                 exit 1
             fi
-            run=true
             run_VALUE="$2"
             shift 2
             ;;
@@ -140,8 +140,15 @@ for opt in "$@"; do
                 echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
                 exit 1
             fi
-            structure=true
             READ_STRUCTURE="$2"
+            shift 2
+            ;;
+    '-n' | '--number' )
+            if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+                echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
+                exit 1
+            fi
+            BARCODE_NUMBER="$2"
             shift 2
             ;;
     '-d' | '--dta' )
@@ -188,7 +195,9 @@ mkdir tmp
 mkdir out
 
 #Preparation for barcodes
-for i in {1..48}
+head -n `expr $BARCODE_NUMBER \+ 1` src/barcode_default.txt > barcode.txt
+
+for i in `seq 1 $BARCODE_NUMBER`
 do
 echo -e ${OUTPUT_NAME}_${i}_Lane1.bam"\t"${OUTPUT_NAME}_${i}_Lane1"\t"${OUTPUT_NAME}_${i}_Lane1 >> tmp/out
 done
@@ -300,7 +309,7 @@ mkdir tmp/Unaligned_bam
 mv *.bam tmp/Unaligned_bam
 
 #Merging all lanes
-for i in {1..48}
+for i in `seq 1 $BARCODE_NUMBER`
 do
 java -Xmx16g -jar $PICARD_HOME/picard.jar MergeSamFiles \
 $(printf "I=%s " tmp/UMI/${OUTPUT_NAME}_${i}_Lane*.umi.bam) \
@@ -315,7 +324,7 @@ rm -rf tmp/UMI
 
 #Mark potential PCR duplicates 
 mkdir out/MarkDuplicates_Metrics
-for i in {1..48}
+for i in `seq 1 $BARCODE_NUMBER`
 do
 java -Xmx16g -jar $PICARD_HOME/picard.jar MarkDuplicates \
 INPUT=tmp/merged/${OUTPUT_NAME}_${i}.merged.bam \
@@ -417,4 +426,4 @@ mkdir Output_bam && mv *.bam Output_bam
 module load R/3.6.1
 module load R_packages/3.6.1
 
-R CMD BATCH --slave --vanilla  ../bin/QC-plot.R QC-plot.R.log
+R CMD BATCH --slave --vanilla  ../bin/QC-plot.R QC-plot.R.log 
