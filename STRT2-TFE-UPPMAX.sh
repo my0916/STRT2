@@ -33,7 +33,6 @@ for opt in "$@"; do
                 echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
                 exit 1
             fi
-            coverage=true
             cover_VALUE="$2"
             shift 2
             ;;
@@ -42,7 +41,6 @@ for opt in "$@"; do
                 echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
                 exit 1
             fi
-            length=true
             len_VALUE="$2"
             shift 2
             ;;
