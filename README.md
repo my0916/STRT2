@@ -38,7 +38,7 @@ For STRT2.sh & STRT2-UPPMAX.sh
     └── [basename].dict
 ```
 - Source files (in `src` directory)
-  - `barcode.txt` : Barcode sequence with barcode name. __Please modify if you used different (number of) barcodes.__
+  - `barcode.txt` : Barcode sequence with barcode name (1–48). __Please modify if you used different (number of) barcodes.__
   - `ERCC.bed` : 5'-end 50 nt region of ERCC spike-ins ([SRM2374](https://www-s.nist.gov/srmors/view_detail.cfm?srm=2374)) for annotation and quality check.
 
 ## Example usage
