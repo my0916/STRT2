@@ -1,14 +1,7 @@
-libs <- c("stringr","dplyr","tibble","ggplot2","cowplot")
-requireLibs(libs)
-
-requireLibs <- function(libs) {
-  for(lib in libs){
-    if(!require(lib, character.only = T)){
-      install.packages(lib)
-      require(lib, character.only = T)
-    }
-  }
-}
+targetPackages <- c("stringr","dplyr","tibble","ggplot2","cowplot") 
+newPackages <- targetPackages[!(targetPackages %in% installed.packages()[,"Package"])]
+if(length(newPackages)) install.packages(newPackages, repos = "http://cran.us.r-project.org")
+for(package in targetPackages) library(package, character.only = T)
 #library(stringr)
 #library(dplyr)
 #library(tibble)
