@@ -1,8 +1,19 @@
-library(stringr)
-library(dplyr)
-library(tibble)
-library(ggplot2)
-library(cowplot)
+libs <- c("stringr","dplyr","tibble","ggplot2","cowplot")
+requireLibs(libs)
+
+requireLibs <- function(libs) {
+  for(lib in libs){
+    if(!require(lib, character.only = T)){
+      install.packages(lib)
+      require(lib, character.only = T)
+    }
+  }
+}
+#library(stringr)
+#library(dplyr)
+#library(tibble)
+#library(ggplot2)
+#library(cowplot)
 
 QC.file <- list.files(pattern = "-QC.txt", full.names = TRUE)
 QC<-read.delim(QC.file,header = T,check.names = F)
