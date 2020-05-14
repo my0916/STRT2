@@ -2,11 +2,6 @@ targetPackages <- c("stringr","dplyr","tibble","ggplot2","cowplot")
 newPackages <- targetPackages[!(targetPackages %in% installed.packages()[,"Package"])]
 if(length(newPackages)) install.packages(newPackages, repos = "http://cran.us.r-project.org")
 for(package in targetPackages) library(package, character.only = T)
-#library(stringr)
-#library(dplyr)
-#library(tibble)
-#library(ggplot2)
-#library(cowplot)
 
 QC.file <- list.files(pattern = "-QC.txt", full.names = TRUE)
 QC<-read.delim(QC.file,header = T,check.names = F)
