@@ -10,7 +10,7 @@ Usage: ${PROGNAME} [-o <output>] [-g <genome (required)>] [-a <annotation>] [-b 
 Options:
   -o, --out               Output file name. (default: OUTPUT)
   -g, --genome            Genome (hg19/hg38/mm9/mm10/canFam3). Required!
-  -a, --annotation        Gene annotation (ref{RefSeq}/ens{Ensembl}/kg{UCSC KnownGenes}) for QC and counting. Default : ref. NOTE: no Ensembl for hg38&mm10, no KnownGenes for canFam3.  
+  -a, --annotation        Gene annotation (ref{RefSeq}/ens{Ensembl}/kg{UCSC KnownGenes}/wgEncodeGencodeBasic*{Gencode}) for QC and counting. Default : ref. NOTE: no Ensembl for hg38&mm10, no KnownGenes for canFam3, no Gencode for mm9&CanFam3.  
   -b, --basecalls         /PATH/to/the Illumina basecalls directory. Required!
   -i, --index             /PATH/to/the directory and basename of the HISAT2 index. Fasta file has to be 'basename.fasta'. Required! 
   -c, --center            The name of the sequencing center that produced the reads. (default: CENTER)
@@ -25,7 +25,7 @@ EOS
 
 function version() {
   cat << EOS >&2
-STRT2-NextSeq-automated-pipeline ver2020.3.17
+STRT2-NextSeq-automated-pipeline ver2020.6.30
 EOS
   exit 1
 }
@@ -93,6 +93,10 @@ for opt in "$@"; do
             elif [[ "$2" =  "ens" ]]; then
               ANNO=true
               ANNO_VALUE="ens"
+              shift 2
+            elif [[ "$2" =  wgEncodeGencodeBasic* ]]; then
+              ANNO=true
+              ANNO_VALUE=$2
               shift 2
             else
               usage
@@ -328,13 +332,19 @@ rm -rf tmp/merged
 
 #Preparation for annotation and QC
 if [[ ${GENOME_VALUE} = "hg38" ]] && [[ ${ANNO_VALUE} =  "ens" ]]; then
-  echo "No Ensembl gene annotations!! Please use RefSeq or KnownGenes for hg38"
+  echo "No Ensembl gene annotations!! Please use RefSeq, KnownGenes, or Gencode for hg38"
   exit 1
 elif [[ ${GENOME_VALUE} = "mm10" ]] && [[ ${ANNO_VALUE} =  "ens" ]]; then
-  echo "No Ensembl gene annotations!! Please use RefSeq or KnownGenes for mm10"
+  echo "No Ensembl gene annotations!! Please use RefSeq or KnownGenes, or Gencode for mm10"
   exit 1
 elif [[ ${GENOME_VALUE} = "canFam3" ]] && [[ ${ANNO_VALUE} =  "kg" ]]; then
   echo "No KnownGenes annotations!! Please use RefSeq or Ensembl for canFam3"
+  exit 1
+elif [[ ${GENOME_VALUE} = "canFam3" ]] && [[ ${ANNO_VALUE} =  wgEncodeGencodeBasic* ]]; then
+  echo "No Gencode annotations!! Please use RefSeq or Ensembl for canFam3"
+  exit 1
+elif [[ ${GENOME_VALUE} = "mm9" ]] && [[ ${ANNO_VALUE} =  wgEncodeGencodeBasic* ]]; then
+  echo "No Gencode annotations!! Please use RefSeq, KnownGenes, or Ensembl for mm9"
   exit 1
 elif [[ ${ANNO_VALUE} =  "ens" ]]; then
   echo "Downloading the Ensembl annotation data..."
@@ -364,6 +374,12 @@ elif [[ ${ANNO_VALUE} =  "ref" ]]; then
   curl -o src/refGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/refGene.txt.gz
   gunzip src/refGene.txt.gz
   ruby bin/RefSeq-extract.rb
+  shift 2
+elif [[ ${ANNO_VALUE} =  wgEncodeGencodeBasic* ]]; then
+  echo "Downloading the Gencode annotation data..."
+  curl -o src/Gencode.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/${ANNO_VALUE}.txt.gz
+  gunzip src/Gencode.txt.gz
+  ruby bin/GENCODE-extract.rb
   shift 2
 else
   echo "Something is wrong with the annotation data file."
