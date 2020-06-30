@@ -25,7 +25,7 @@ EOS
 
 function version() {
   cat << EOS >&2
-STRT2-NextSeq-automated-pipeline ver2020.3.17
+STRT2-NextSeq-automated-pipeline ver2020.6.30
 EOS
   exit 1
 }
