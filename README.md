@@ -77,7 +77,7 @@ sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o STRT2LIB 
    - `-a, --annotation` availability as of July 2020:
    
     | | RefSeq (ref) | Ensembl (ens) | KnownGenes (kg) | Gencode |
-    | :---: | :---: | :---: | :---: |
+    | :---: | :---: | :---: | :---: | :---: |
     | hg19 (human) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
     |  hg38 (human) | :heavy_check_mark: | NA | :heavy_check_mark: | :heavy_check_mark: |
     | mm9 (mouse) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | NA |
