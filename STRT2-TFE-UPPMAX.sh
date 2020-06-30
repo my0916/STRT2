@@ -1,13 +1,22 @@
 #!/bin/bash
+
 PROGNAME="$( basename $0 )"
 
 #Usage
 function usage() {
   cat << EOS >&2
-Usage: ${PROGNAME}
+Usage: ${PROGNAME} [-o <output>] [-g <genome (required)>] [-a <annotation>] [-b <path (required)>] [-i <path (required)>]
+
 Options:
-  -c, --coverage          Minimum read coverage allowed for the predicted transcripts. (default: 5)
-  -l, --length            Minimum length allowed for the predicted transcripts. (default: 74)
+  -o, --out               Output file name. (default: OUTPUT)
+  -g, --genome            Genome (hg19/hg38/mm9/mm10/canFam3). Required!
+  -a, --annotation        Gene annotation (ref{RefSeq}/ens{Ensembl}/kg{UCSC KnownGenes}/wgEncodeGencodeBasic*{Gencode}) for QC and counting. Default : ref. NOTE: no Ensembl for hg38&mm10, no KnownGenes for canFam3, no Gencode for mm9&CanFam3.  
+  -b, --basecalls         /PATH/to/the Illumina basecalls directory. Required!
+  -i, --index             /PATH/to/the directory and basename of the HISAT2 index. Fasta file has to be 'basename.fasta'. Required! 
+  -c, --center            The name of the sequencing center that produced the reads. (default: CENTER)
+  -r, --run               The barcode of the run. Prefixed to read names. (default: RUNBARCODE)
+  -s, --structure         Read structure (default: 8M3S74T6B)
+  -d, --dta               Downstream-transcriptome-assembly for HISAT2, which is useful for TFE-based analysis but leads to fewer alignments with short-anchors.
   -h, --help              Show usage.
   -v, --version           Show version.
 EOS
@@ -16,33 +25,128 @@ EOS
 
 function version() {
   cat << EOS >&2
-STRT2-NextSeq-automated-pipeline_TFE-based ver2019.12.21
+STRT2-NextSeq-automated-pipeline ver2020.3.17
 EOS
   exit 1
 }
 
 #Default parameters
-cover_VALUE=5
-len_VALUE=74
+OUTPUT_NAME=OUTPUT
+run_VALUE=RUNBARCODE
+center_VALUE=CENTER
+READ_STRUCTURE=8M3S74T6B
+IF_DTA=false
 
 PARAM=()
 for opt in "$@"; do
     case "${opt}" in
-    '-c' | '--coverage' )
+    '-o' | '--out' )
             if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
                 echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
                 exit 1
             fi
-            cover_VALUE="$2"
+            OUTNAME=true
+            OUTPUT_NAME="$2"
             shift 2
             ;;
-    '-l' | '--length' )
+    '-g' | '--genome' )
+            if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+              echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
+              exit 1
+            elif [[ "$2" =  "hg19" ]]; then
+              GENOME=true
+              GENOME_VALUE="hg19"
+              shift 2
+            elif [[ "$2" =  "hg38" ]]; then
+              GENOME=true
+              GENOME_VALUE="hg38"
+              shift 2
+            elif [[ "$2" =  "mm9" ]]; then
+              GENOME=true
+              GENOME_VALUE="mm9"
+              shift 2
+            elif [[ "$2" =  "mm10" ]]; then
+              GENOME=true
+              GENOME_VALUE="mm10"
+              shift 2
+            elif  [[ "$2" =  "canFam3" ]]; then
+              GENOME=true
+              GENOME_VALUE="canFam3"
+              shift 2
+            else
+              usage
+              exit 1
+            fi
+            ;;
+     '-a' | '--annotation' )
+            if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+              echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
+              exit 1
+            elif [[ "$2" =  "ref" ]]; then
+              ANNO=true
+              ANNO_VALUE="ref"
+              shift 2
+            elif [[ "$2" =  "kg" ]]; then
+              ANNO=true
+              ANNO_VALUE="kg"
+              shift 2
+            elif [[ "$2" =  "ens" ]]; then
+              ANNO=true
+              ANNO_VALUE="ens"
+              shift 2
+            elif [[ "$2" =  wgEncodeGencodeBasic* ]]; then
+              ANNO=true
+              ANNO_VALUE=$2
+              shift 2
+            else
+              usage
+              exit 1
+            fi
+            ;;
+    '-b' | '--basecalls' )
             if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
                 echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
                 exit 1
             fi
-            len_VALUE="$2"
+            BaseCallsDir=true
+            BaseCallsDir_PATH="$2"
             shift 2
+            ;;
+    '-i' | '--index' )
+            if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+                echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
+                exit 1
+            fi
+            Index=true
+            Index_PATH="$2"
+            shift 2
+            ;;
+    '-c' | '--center' )
+            if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+                echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
+                exit 1
+            fi
+            center_VALUE="$2"
+            shift 2
+            ;;
+    '-r' | '--run' )
+            if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+                echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
+                exit 1
+            fi
+            run_VALUE="$2"
+            shift 2
+            ;;
+    '-s' | '--structure' )
+            if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+                echo "${PROGNAME}: option requires an argument -- $( echo $1 | sed 's/^-*//' )" 1>&2
+                exit 1
+            fi
+            READ_STRUCTURE="$2"
+            shift 2
+            ;;
+    '-d' | '--dta' )
+            IF_DTA=true; shift
             ;;
     '-h' | '--help' )
             usage
@@ -66,181 +170,267 @@ if [[ -n "${PARAM[@]}" ]]; then
     usage
 fi
 
+[ "${GENOME}" != "true" ] && usage
+[ "${BaseCallsDir}" != "true" ] && usage
+[ "${Index}" != "true" ] && usage
+[ "${ANNO}" != "true" ] && ANNO_VALUE=ref
+
+#Loading required tools
 module load bioinfo-tools
+module load picard/2.20.4
+module load HISAT2/2.1.0
 module load samtools/1.9
-module load StringTie/1.3.3
 module load BEDTools/2.27.1
 module load subread/1.5.2
 module load ruby/2.6.2
 
-mkdir byTFE_tmp
-mkdir byTFE_out
-mkdir byTFE_tmp/class
+#Temporary and output directory
+mkdir tmp
+mkdir out
 
-OUTPUT_NAME=$(basename out/Output_bam/*_1.output.bam _1.output.bam)
+#Preparation for barcodes
+ALL_LINES=`cat src/barcode.txt | wc -l`
+NLINES=`expr $ALL_LINES \- 1`
 
-#Sample classification
-while read row; do
-  column1=`echo ${row} | cut -d ' ' -f 1`
-  column2=`echo ${row} | cut -d ' ' -f 2`
-  if [[ $column2 != "NA" ]]; then
-    mkdir -p byTFE_tmp/class/${column2}
-    cp out/Output_bam/${OUTPUT_NAME}_${column1}.output.bam byTFE_tmp/class/${column2}
-  else
-    :
-  fi
-done < src/TFEclass.txt
-
-classes=`find byTFE_tmp/class/* -type d` 
-for class in $classes;
+for i in `seq 1 $NLINES`
 do
-CLASS_NAME=$(basename $class byTFE_tmp/class/)
-  #Merge all BAMs, remove duplicated, non-primary, unmapped reads, and sort
-  samtools merge -@ 8 - $class/*.bam | samtools view -@ 8 -b -F 256 -F 1024 -F 4 - | samtools sort -@ 8 -o $class/merged.bam
+echo -e ${OUTPUT_NAME}_${i}_Lane1.bam"\t"${OUTPUT_NAME}_${i}_Lane1"\t"${OUTPUT_NAME}_${i}_Lane1 >> tmp/out
+done
+paste tmp/out <(awk 'NR>1{print $1}' src/barcode.txt) | cut -f 1-4 > tmp/out2 && rm tmp/out
+echo -e ${OUTPUT_NAME}_non-indexed_Lane1.bam"\t"${OUTPUT_NAME}_non-indexed_Lane1"\t" ${OUTPUT_NAME}_non-indexed_Lane1"\t"N >> tmp/out2
+echo -e OUTPUT"\t"SAMPLE_ALIAS"\t"LIBRARY_NAME"\t"BARCODE_1  | cat - tmp/out2 > library.param.lane1 && rm tmp/out2
 
-  #Assembly with Stringtie 
-  stringtie $class/merged.bam -o $class/stringtie.gtf -p 8 -m ${len_VALUE} --fr -l ${OUTPUT_NAME}.${CLASS_NAME} -c ${cover_VALUE}
-
-  #Extract 1st-exon
-  cat $class/stringtie.gtf | awk '{if($7=="+"||$7=="."){print $0}}'| grep 'exon_number "1"' \
-  | awk 'OFS =  "\t" {print $1,$4-1,$5,$12,"0",$7}' | sed -e 's/"//g'| sed -e 's/;//g' > $class/firstExons-fwd.bed 
-  cat $class/stringtie.gtf | awk 'BEGIN{OFS="\t"}{if($7=="-" && $3=="exon"){print $1,$4-1,$5,$12,"0",$7}}' \
-  | sed -e 's/"//g'| sed -e 's/;//g' | sort -k 4,4 -k 1,1 -k 2,2n | bedtools groupby -i stdin -g 4  -c 1,2,3,4,5,6 -o last \
-  | awk 'BEGIN{OFS="\t"}{print $2,$3,$4,$5,$6,$7}' > $class/firstExons-rev.bed
-  cat $class/firstExons-fwd.bed  $class/firstExons-rev.bed | sortBed -i stdin > $class/firstExons.bed
-  rm $class/firstExons-fwd.bed && rm $class/firstExons-rev.bed
-
-  #Fiveprimes for peak detection
-  mkdir $class/bedGraph
-  for file in $class/*.output.bam
-  do
-  name=$(basename $file .output.bam)
-  Spike=$(samtools view -F 256 -F 1024 -F 4 $file |grep -e ERCC -e NIST| wc -l)
-  samtools view -b -F 256 -F 1024 -F 4 $file | bamToBed -i stdin\
-  | gawk 'BEGIN{ FS="\t"; OFS=" " }{if($6=="+"){print $1,$2,$2+1,".",0,"+"}else{print $1,$3-1,$3,".",0,"-"}}'\
-  | sort -k 1,1 -k 2,2n\
-  | uniq -c\
-  | gawk 'BEGIN{ FS=" "; OFS="\t" }{print $2,$3,$4,$5,$1/'$Spike',$7}'\
-  | pigz -c > $class/bedGraph/$name.bedGraph.gz
-  done
-  gunzip -c $class/bedGraph/*.bedGraph.gz | sort -k 1,1 -k 2,2n | mergeBed -s -c 4,5,6 -o distinct,sum,distinct -d -1  > $class/fivePrimes.bed
+##Number of lanes
+nlanes=`ls -l ${BaseCallsDir_PATH} | grep ^d | wc -l`
+for i in `seq 2 $nlanes`
+do
+sed -e "s/Lane1/Lane${i}/g" library.param.lane1 > library.param.lane${i}
 done
 
-#TFE annotation
-cat byTFE_tmp/class/*/firstExons.bed | sort -k 1,1 -k 2,2n |awk '{if($6=="+"){print $0}}' | grep -e ERCC -e NIST \
-| mergeBed -s -c 6 -o distinct | bedtools groupby -i stdin -g 1  -c 1,2,3,4 -o first \
-| awk 'BEGIN{OFS="\t"}{print $2,$3,$4,"RNA_SPIKE_"$2,0,$5}' > byTFE_tmp/${OUTPUT_NAME}_spike-firstExons_class.bed 
-cat byTFE_tmp/class/*/firstExons.bed | sort -k 1,1 -k 2,2n | mergeBed -s -c 6 -o distinct \
-| grep -v ERCC| grep -v NIST | awk 'BEGIN{OFS="\t"}{print $1,$2,$3,"TFE"NR,0,$4}' > byTFE_tmp/${OUTPUT_NAME}_nonspike-firstExons_class.bed 
-cat byTFE_tmp/${OUTPUT_NAME}_spike-firstExons_class.bed  byTFE_tmp/${OUTPUT_NAME}_nonspike-firstExons_class.bed > byTFE_tmp/${OUTPUT_NAME}_TFE-regions.bed
-rm byTFE_tmp/${OUTPUT_NAME}_spike-firstExons_class.bed && rm byTFE_tmp/${OUTPUT_NAME}_nonspike-firstExons_class.bed
+#Convert BCL files to BAM files
+for i in `seq 1 $nlanes`
+do
+java -Xmx16g -jar $PICARD_HOME/picard.jar ExtractIlluminaBarcodes \
+BASECALLS_DIR=${BaseCallsDir_PATH}/ \
+LANE=${i} \
+READ_STRUCTURE=${READ_STRUCTURE} \
+BARCODE_FILE=src/barcode.txt  \
+METRICS_FILE=metrics_output_lane${i}.txt ;
+java -Xmx16g -jar $PICARD_HOME/picard.jar IlluminaBasecallsToSam \
+BASECALLS_DIR=${BaseCallsDir_PATH}/ \
+LANE=${i} \
+READ_STRUCTURE=${READ_STRUCTURE} \
+RUN_BARCODE=${run_VALUE} \
+IGNORE_UNEXPECTED_BARCODES=true \
+LIBRARY_PARAMS=library.param.lane${i} \
+SEQUENCING_CENTER=${center_VALUE} \
+INCLUDE_NON_PF_READS=false
+done
 
-#Counting
-awk '{print $4 "\t" $1 "\t" $2+1 "\t" $3 "\t" $6}' byTFE_tmp/${OUTPUT_NAME}_TFE-regions.bed > byTFE_tmp/${OUTPUT_NAME}_TFE-regions.saf
-featureCounts -T 8 -s 1 --largestOverlap --ignoreDup --primary -a byTFE_tmp/${OUTPUT_NAME}_TFE-regions.saf -F SAF -o byTFE_tmp/${OUTPUT_NAME}_byTFE-counts.txt byTFE_tmp/class/*/*.output.bam
+rm library.param.lane*
+mkdir out/ExtractIlluminaBarcodes_Metrics && mv metrics_output_lane*.txt out/ExtractIlluminaBarcodes_Metrics
 
-#Peaks
-cat byTFE_tmp/class/*/fivePrimes.bed | sort -k 1,1 -k 2,2n | mergeBed -s -c 4,5,6 -o distinct,sum,distinct -d -1  > byTFE_tmp/${OUTPUT_NAME}_fivePrimes.bed
-intersectBed -wa -wb -s -a byTFE_tmp/${OUTPUT_NAME}_TFE-regions.bed -b byTFE_tmp/${OUTPUT_NAME}_fivePrimes.bed \
-  | cut -f 4,7,8,9,11,12 \
-  | gawk 'BEGIN{ FS="\t"; OFS="\t" }{p=$6=="+"?$3:-$4;print $2,$3,$4,$1,$5,$6,p,$1}' \
-  | sort -k 8,8 -k 5,5gr -k 7,7g \
-  | uniq -f 7 \
-  | cut -f 1-6 \
-  | sort -k 1,1 -k 2,2n > byTFE_out/${OUTPUT_NAME}_peaks.bed
+#Make the fasta reference / sequence dictionary if they do not exist. 
+if [[ ! -e ${Index_PATH}.fasta ]]; then
+  hisat2-inspect ${Index_PATH} > ${Index_PATH}.fasta
+  java -Xmx16g -jar $PICARD_HOME/picard.jar CreateSequenceDictionary R=${Index_PATH}.fasta O=${Index_PATH}.dict
+fi
+if [[ ! -e ${Index_PATH}.dict ]]; then
+  java -Xmx16g -jar $PICARD_HOME/picard.jar CreateSequenceDictionary R=${Index_PATH}.fasta O=${Index_PATH}.dict
+fi
 
-#Annotation of peaks
-mkdir src/anno
-if test -f src/ens-genes.txt && test ! -f src/knowngene-names.txt && test ! -f src/refGene.txt; then
-  echo "Annotation with Ensembl"
-  ruby bin/ensGene_annotation.rb
+#Mapping by HISAT2 and merging with the original unaligned BAM files to generate UMI-annotated BAM files
+mkdir tmp/UMI
+mkdir out/HISAT2_Metrics
+
+if [ $IF_DTA = true ]; then
+  for file in *.bam
+  do
+  name=$(basename $file .bam)
+  echo $name >> out/HISAT2_Metrics/Alignment-summary.txt 
+  java -Xmx16g -jar $PICARD_HOME/picard.jar SortSam \
+      I=$file \
+      O=tmp/.unmapped.sorted.bam \
+     SORT_ORDER=queryname;
+  java -Xmx16g -jar $PICARD_HOME/picard.jar SamToFastq \
+  I=tmp/.unmapped.sorted.bam \
+  F=/dev/stdout \
+    | hisat2 -p 8 --dta -x ${Index_PATH} \
+    -U /dev/stdin -S /dev/stdout \
+    2>> out/HISAT2_Metrics/Alignment-summary.txt  \
+    | java -Xmx16g -jar $PICARD_HOME/picard.jar SortSam \
+      I=/dev/stdin \
+      O=tmp/.mapped.sorted.sam \
+      SORT_ORDER=queryname;
+      java -Xmx16g -jar $PICARD_HOME/picard.jar MergeBamAlignment \
+      ATTRIBUTES_TO_RETAIN=XS \
+      UNMAPPED=tmp/.unmapped.sorted.bam  \
+      ALIGNED=tmp/.mapped.sorted.sam \
+      O=tmp/UMI/$name.umi.bam \
+      R=${Index_PATH}.fasta
+  done
+else
+  for file in *.bam
+  do
+  name=$(basename $file .bam)
+  echo $name >> out/HISAT2_Metrics/Alignment-summary.txt 
+  java -Xmx16g -jar $PICARD_HOME/picard.jar SortSam \
+      I=$file \
+      O=tmp/.unmapped.sorted.bam \
+     SORT_ORDER=queryname;
+  java -Xmx16g -jar $PICARD_HOME/picard.jar SamToFastq \
+  I=tmp/.unmapped.sorted.bam \
+  F=/dev/stdout \
+    | hisat2 -p 8 -x ${Index_PATH} \
+    -U /dev/stdin -S /dev/stdout \
+    2>> out/HISAT2_Metrics/Alignment-summary.txt  \
+    | java -Xmx16g -jar $PICARD_HOME/picard.jar SortSam \
+      I=/dev/stdin \
+      O=tmp/.mapped.sorted.sam \
+      SORT_ORDER=queryname;
+      java -Xmx16g -jar $PICARD_HOME/picard.jar MergeBamAlignment \
+      ATTRIBUTES_TO_RETAIN=XS \
+      UNMAPPED=tmp/.unmapped.sorted.bam  \
+      ALIGNED=tmp/.mapped.sorted.sam \
+      O=tmp/UMI/$name.umi.bam \
+      R=${Index_PATH}.fasta
+  done
+fi
+
+rm tmp/.unmapped.sorted.bam
+rm tmp/.mapped.sorted.sam
+mkdir tmp/merged
+mkdir tmp/Unaligned_bam
+mv *.bam tmp/Unaligned_bam
+
+#Merging all lanes
+for i in `seq 1 $NLINES`
+do
+java -Xmx16g -jar $PICARD_HOME/picard.jar MergeSamFiles \
+$(printf "I=%s " tmp/UMI/${OUTPUT_NAME}_${i}_Lane*.umi.bam) \
+O=/dev/stdout |
+java -Xmx16g -jar $PICARD_HOME/picard.jar AddOrReplaceReadGroups \
+I=/dev/stdin \
+O=tmp/merged/${OUTPUT_NAME}_${i}.merged.bam \
+RGLB=${OUTPUT_NAME}_${i} RGPL=NextSeq RGPU=${i} RGSM=${i}
+done
+
+rm -rf tmp/UMI
+
+#Mark potential PCR duplicates 
+mkdir out/MarkDuplicates_Metrics
+for i in `seq 1 $NLINES`
+do
+java -Xmx16g -jar $PICARD_HOME/picard.jar MarkDuplicates \
+INPUT=tmp/merged/${OUTPUT_NAME}_${i}.merged.bam \
+OUTPUT=out/${OUTPUT_NAME}_${i}.output.bam \
+METRICS_FILE=out/MarkDuplicates_Metrics/${OUTPUT_NAME}_${i}.metrics.txt \
+BARCODE_TAG=RX
+done
+
+rm -rf tmp/merged
+
+#Preparation for annotation and QC
+if [[ ${GENOME_VALUE} = "hg38" ]] && [[ ${ANNO_VALUE} =  "ens" ]]; then
+  echo "No Ensembl gene annotations!! Please use RefSeq, KnownGenes, or Gencode for hg38"
+  exit 1
+elif [[ ${GENOME_VALUE} = "mm10" ]] && [[ ${ANNO_VALUE} =  "ens" ]]; then
+  echo "No Ensembl gene annotations!! Please use RefSeq or KnownGenes, or Gencode for mm10"
+  exit 1
+elif [[ ${GENOME_VALUE} = "canFam3" ]] && [[ ${ANNO_VALUE} =  "kg" ]]; then
+  echo "No KnownGenes annotations!! Please use RefSeq or Ensembl for canFam3"
+  exit 1
+elif [[ ${GENOME_VALUE} = "canFam3" ]] && [[ ${ANNO_VALUE} =  wgEncodeGencodeBasic* ]]; then
+  echo "No Gencode annotations!! Please use RefSeq or Ensembl for canFam3"
+  exit 1
+elif [[ ${GENOME_VALUE} = "mm9" ]] && [[ ${ANNO_VALUE} =  wgEncodeGencodeBasic* ]]; then
+  echo "No Gencode annotations!! Please use RefSeq, KnownGenes, or Ensembl for mm9"
+  exit 1
+elif [[ ${ANNO_VALUE} =  "ens" ]]; then
+  echo "Downloading the Ensembl annotation data..."
+  curl -o src/ensGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/ensGene.txt.gz
+  curl -o src/ensemblToGeneName.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/ensemblToGeneName.txt.gz
+  gunzip src/ensGene.txt.gz
+  gunzip src/ensemblToGeneName.txt.gz
+  join -1 1 -2 2 -t $'\t' <(sort -k 1,1 src/ensemblToGeneName.txt) <(sort -k 2,2 src/ensGene.txt) > src/common.txt
+  join -1 1 -2 2 -t $'\t' -v 2 <(sort -k 1,1 src/ensemblToGeneName.txt) <(sort -k 2,2 src/ensGene.txt) | awk 'BEGIN{OFS="\t"}{print $2,$13,$1,$1=$2="",$0}' | cut -f 1-3,7- > src/no-genename.txt
+  rm src/ensGene.txt && rm src/ensemblToGeneName.txt
+  cat src/common.txt src/no-genename.txt > src/ens-genes.txt
+  rm src/common.txt && rm src/no-genename.txt
+  ruby bin/ENSEMBL-extract.rb
   shift 2
-elif test ! -f src/ens-genes.txt && test -f src/knowngene-names.txt && test ! -f src/refGene.txt; then
-  echo "Annotation with UCSC KnownGenes"
-  ruby bin/knownGene_annotation.rb
+elif [[ ${ANNO_VALUE} =  "kg" ]]; then
+  echo "Downloading the UCSC KnownGenes annotation data..."
+  curl -o src/knownGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/knownGene.txt.gz
+  curl -o src/kgXref.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/kgXref.txt.gz
+  gunzip src/knownGene.txt.gz
+  gunzip src/kgXref.txt.gz
+  join  -1 1 -2 1 -t $'\t' <(sort -k 1,1 src/kgXref.txt | cut -f 1-5) <(sort -k 1,1 src/knownGene.txt) > src/knowngene-names.txt
+  rm src/knownGene.txt && rm src/kgXref.txt
+  ruby bin/KnownGenes-extract.rb
   shift 2
-elif test ! -f src/ens-genes.txt && test ! -f src/knowngene-names.txt && test -f src/refGene.txt; then
-  echo "Annotation with NCBI RefSeq"
-  ruby bin/refGene_annotation.rb
+elif [[ ${ANNO_VALUE} =  "ref" ]]; then
+  echo "Downloading the NCBI RefSeq annotation data..."
+  curl -o src/refGene.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/refGene.txt.gz
+  gunzip src/refGene.txt.gz
+  ruby bin/RefSeq-extract.rb
+  shift 2
+elif [[ ${ANNO_VALUE} =  wgEncodeGencodeBasic* ]]; then
+  echo "Downloading the Gencode annotation data..."
+  curl -o src/Gencode.txt.gz http://hgdownload.cse.ucsc.edu/goldenPath/${GENOME_VALUE}/database/${ANNO_VALUE}.txt.gz
+  gunzip src/Gencode.txt.gz
+  ruby bin/GENCODE-extract.rb
   shift 2
 else
   echo "Something is wrong with the annotation data file."
   exit 1
 fi
 
-intersectBed -a src/anno/Coding-up.bed -b src/chrom.size.bed > src/anno/Coding-up_trimmed.bed
-intersectBed -a src/anno/NC-up.bed -b src/chrom.size.bed > src/anno/NC-up_trimmed.bed
+echo "Downloading the chromosome size data..."
+curl -o src/${GENOME_VALUE}.chrom.sizes http://hgdownload.soe.ucsc.edu/goldenPath/${GENOME_VALUE}/bigZips/${GENOME_VALUE}.chrom.sizes
+cat src/${GENOME_VALUE}.chrom.sizes | awk '{print $1"\t"1"\t"$2}' | sortBed -i > src/chrom.size.bed 
+cat src/proxup.bed | grep -v _alt  | grep -v _hap | grep -v _fix | grep -v _random | grep -v ^chrUn | sortBed -i stdin | intersectBed -a stdin -b src/chrom.size.bed > src/proxup_trimmed.bed
+cat src/5utr.bed src/proxup_trimmed.bed | grep -v _alt | grep -v _hap | grep -v _fix | grep -v _random | grep -v ^chrUn | sortBed -i stdin | mergeBed -s -o distinct,distinct,distinct -c 4,5,6 -i - | grep -v , > src/coding_5end.bed
+cat src/exon.bed src/proxup_trimmed.bed | grep -v _alt | grep -v _hap | grep -v _fix | grep -v _random | grep -v ^chrUn | sortBed -i stdin | mergeBed -s -o distinct,distinct,distinct -c 4,5,6 -i - > src/coding.bed
+cat src/ERCC.bed src/coding_5end.bed | awk '{print $4 "\t" $1 "\t" $2+1 "\t" $3 "\t" $6}' > src/5end-regions.saf
 
-intersectBed -s -wa -wb -a byTFE_out/${OUTPUT_NAME}_peaks.bed -b src/anno/Coding-5UTR.bed | awk -F "\t" '{print($4,$10)}' \
-|awk -F "|" '{if(a[$1])a[$1]=a[$1]";"$2; else a[$1]=$2;}END{for (i in a)print i, a[i];}' OFS="\t" \
-|awk -F " " '{print $1"\t"$2","$3}' \
-|awk -F "\t" '{if(a[$1])a[$1]=a[$1]":"$2; else a[$1]=$2;}END{for (i in a)print i, a[i];}' OFS="\t" \
-|awk -v 'OFS=\t' '{print $1,$2,"Coding_5UTR"}' | sort -k 1,1 > src/anno/peaks_class1.txt
+rm src/${GENOME_VALUE}.chrom.sizes
+rm src/5utr.bed 
+rm src/exon.bed
+rm src/proxup.bed
+rm src/proxup_trimmed.bed
 
-intersectBed -s -wa -wb -a byTFE_out/${OUTPUT_NAME}_peaks.bed -b src/anno/Coding-5UTR.bed -v > src/anno/peaks_nonClass1.bed
-intersectBed -s -wa -wb -a src/anno/peaks_nonClass1.bed -b src/anno/Coding-up_trimmed.bed | awk -F "\t" '{print($4,$10)}' \
-|awk -F "|" '{if(a[$1])a[$1]=a[$1]";"$2; else a[$1]=$2;}END{for (i in a)print i, a[i];}' OFS="\t" \
-|awk -F " " '{print $1"\t"$2","$3}' \
-|awk -F "\t" '{if(a[$1])a[$1]=a[$1]":"$2; else a[$1]=$2;}END{for (i in a)print i, a[i];}' OFS="\t" \
-|awk -v 'OFS=\t' '{print $1,$2,"Coding_upstream"}' | sort -k 1,1 > src/anno/peaks_class2.txt
+#Quality check
+cd out
+echo -e Barcode"\t"Qualified_reads"\t"Total_reads"\t"Redundancy"\t"Mapped_reads"\t"Mapping_rate\
+"\t"Spikein_reads"\t"Spikein-5end_reads"\t"Spikein-5end_rate"\t"Coding_reads"\t"Coding-5end_reads"\t"Coding-5end_rate > ${OUTPUT_NAME}-QC.txt
 
-intersectBed -s -wa -wb -a src/anno/peaks_nonClass1.bed -b src/anno/Coding-up_trimmed.bed -v > src/anno/peaks_nonClass2.bed
-intersectBed -s -wa -wb -a src/anno/peaks_nonClass2.bed -b src/anno/Coding-CDS.bed | awk -F "\t" '{print($4,$10)}' \
-|awk -F "|" '{if(a[$1])a[$1]=a[$1]";"$2; else a[$1]=$2;}END{for (i in a)print i, a[i];}' OFS="\t" \
-|awk -F " " '{print $1"\t"$2","$3}' \
-|awk -F "\t" '{if(a[$1])a[$1]=a[$1]":"$2; else a[$1]=$2;}END{for (i in a)print i, a[i];}' OFS="\t" \
-|awk -v 'OFS=\t' '{print $1,$2,"Coding_CDS"}' | sort -k 1,1 > src/anno/peaks_class3.txt
+for file in *.output.bam
+do
+name=$(basename $file .output.bam)
+samtools index $file
+QR=$(samtools view -F 256 $file | wc -l)
+Total=$(samtools view -F 256 -F 1024 $file | wc -l)
+Redundancy=$(echo "scale=2;$QR/$Total" | bc)
+Map=$(samtools view -F 256 -F 1024 -F 4 $file | wc -l)
+Rate=$(echo "scale=1;$Map*100/$Total" | bc)
+Spike=$(samtools view -F 256 -F 1024 -F 4 $file |grep -e ERCC -e NIST| wc -l)
+spikein_5end_reads=$(samtools view -u -F 256 -F 1024 -F 4 $file | intersectBed -abam stdin -wa -bed -b ../src/ERCC.bed | cut -f 4 | sort -u | wc -l)
+spikein_5end_rate=$(echo "scale=1;$spikein_5end_reads*100/$Spike" | bc)
+coding_reads=$(samtools view -u -F 256 -F 1024 -F 4 $file | intersectBed -abam stdin -wa -bed -b ../src/coding.bed | cut -f 4 | sort -u | wc -l)
+coding_5end_reads=$(samtools view -u -F 256 -F 1024 -F 4 $file | intersectBed -abam stdin -wa -bed -b ../src/coding_5end.bed | cut -f 4 | sort -u | wc -l)
+coding_5end_rate=$(echo "scale=1;$coding_5end_reads*100/$coding_reads" | bc)
+echo -e $name"\t"$QR"\t"$Total"\t"$Redundancy"\t"$Map"\t"$Rate"\t"$Spike"\t"$spikein_5end_reads"\t"$spikein_5end_rate"\t"$coding_reads"\t"$coding_5end_reads"\t"$coding_5end_rate >> ${OUTPUT_NAME}-QC.txt 
+done
 
-intersectBed -s -wa -wb -a src/anno/peaks_nonClass2.bed -b src/anno/Coding-CDS.bed -v > src/anno/peaks_nonClass3.bed
-intersectBed -s -wa -wb -a src/anno/peaks_nonClass3.bed -b src/anno/Coding-3UTR.bed | awk -F "\t" '{print($4,$10)}' \
-|awk -F "|" '{if(a[$1])a[$1]=a[$1]";"$2; else a[$1]=$2;}END{for (i in a)print i, a[i];}' OFS="\t" \
-|awk -F " " '{print $1"\t"$2","$3}' \
-|awk -F "\t" '{if(a[$1])a[$1]=a[$1]":"$2; else a[$1]=$2;}END{for (i in a)print i, a[i];}' OFS="\t" \
-|awk -v 'OFS=\t' '{print $1,$2,"Coding_3UTR"}' | sort -k 1,1 > src/anno/peaks_class4.txt
+#Counting by featureCounts
+featureCounts -T 8 -s 1 --largestOverlap --ignoreDup --primary -a ../src/5end-regions.saf -F SAF -o ${OUTPUT_NAME}_byGene-counts.txt *.bam
 
-intersectBed -s -wa -wb -a src/anno/peaks_nonClass3.bed -b src/anno/Coding-3UTR.bed -v > src/anno/peaks_nonClass4.bed
-intersectBed -s -wa -wb -a src/anno/peaks_nonClass4.bed -b src/anno/NC-1stexon.bed | awk -F "\t" '{print($4,$10)}' \
-|awk -F "|" '{if(a[$1])a[$1]=a[$1]";"$2; else a[$1]=$2;}END{for (i in a)print i, a[i];}' OFS="\t" \
-|awk -F " " '{print $1"\t"$2","$3}' \
-|awk -F "\t" '{if(a[$1])a[$1]=a[$1]":"$2; else a[$1]=$2;}END{for (i in a)print i, a[i];}' OFS="\t" \
-|awk -v 'OFS=\t' '{print $1,$2,"Noncoding_1st-exon"}' | sort -k 1,1 > src/anno/peaks_class5.txt
+mkdir Output_bai && mv *.bam.bai Output_bai
+mkdir Output_bam && mv *.bam Output_bam
 
-intersectBed -s -wa -wb -a src/anno/peaks_nonClass4.bed -b src/anno/NC-1stexon.bed -v > src/anno/peaks_nonClass5.bed
-intersectBed -s -wa -wb -a src/anno/peaks_nonClass5.bed -b src/anno/NC-up_trimmed.bed | awk -F "\t" '{print($4,$10)}' \
-|awk -F "|" '{if(a[$1])a[$1]=a[$1]";"$2; else a[$1]=$2;}END{for (i in a)print i, a[i];}' OFS="\t" \
-|awk -F " " '{print $1"\t"$2","$3}' \
-|awk -F "\t" '{if(a[$1])a[$1]=a[$1]":"$2; else a[$1]=$2;}END{for (i in a)print i, a[i];}' OFS="\t" \
-|awk -v 'OFS=\t' '{print $1,$2,"Noncoding_upstream"}' | sort -k 1,1 > src/anno/peaks_class6.txt
+#Plotting
+module load R/3.6.1
+module load R_packages/3.6.1
 
-intersectBed -s -wa -wb -a src/anno/peaks_nonClass5.bed -b src/anno/NC-up_trimmed.bed -v > src/anno/peaks_nonClass6.bed
-intersectBed -s -wa -wb -a src/anno/peaks_nonClass6.bed -b src/anno/NC-exon.bed | awk -F "\t" '{print($4,$10)}' \
-|awk -F "|" '{if(a[$1])a[$1]=a[$1]";"$2; else a[$1]=$2;}END{for (i in a)print i, a[i];}' OFS="\t" \
-|awk -F " " '{print $1"\t"$2","$3}' \
-|awk -F "\t" '{if(a[$1])a[$1]=a[$1]":"$2; else a[$1]=$2;}END{for (i in a)print i, a[i];}' OFS="\t" \
-|awk -v 'OFS=\t' '{print $1,$2,"Noncoding_other-exon"}' | sort -k 1,1 > src/anno/peaks_class7.txt
-
-intersectBed -s -wa -wb -a src/anno/peaks_nonClass6.bed -b src/anno/NC-exon.bed -v > src/anno/peaks_nonClass7.bed
-intersectBed -s -wa -wb -a src/anno/peaks_nonClass7.bed -b src/anno/Intron.bed | awk -F "\t" '{print($4,$10)}' \
-|awk -F "|" '{if(a[$1])a[$1]=a[$1]";"$2; else a[$1]=$2;}END{for (i in a)print i, a[i];}' OFS="\t" \
-|awk -F " " '{print $1"\t"$2","$3}' \
-|awk -F "\t" '{if(a[$1])a[$1]=a[$1]":"$2; else a[$1]=$2;}END{for (i in a)print i, a[i];}' OFS="\t" \
-|awk -v 'OFS=\t' '{print $1,$2,"Intron"}' | sort -k 1,1 > src/anno/peaks_class8.txt
-
-intersectBed -s -wa -wb -a src/anno/peaks_nonClass7.bed -b src/anno/Intron.bed -v > src/anno/peaks_nonClass8.bed
-cat src/anno/peaks_nonClass8.bed | awk -v 'OFS=\t' '{print($4,$1":"$3";"$6,"Unannotated")}' > src/anno/peaks_class9.txt
-
-for i in {1..9}; do
-cat src/anno/peaks_class${i}.txt 
-done | sort -k 1,1 > byTFE_out/${OUTPUT_NAME}_annotation.txt
-
-join -1 4 -2 4 -t "$(printf '\011')" <(sort -k 4,4 byTFE_tmp/${OUTPUT_NAME}_TFE-regions.bed) <(sort -k 4,4 byTFE_out/${OUTPUT_NAME}_peaks.bed)  \
-| awk 'BEGIN{OFS="\t"}{print $1,$2,$3,$4,$9,$6}' > byTFE_tmp/${OUTPUT_NAME}_TFE-region-peak.txt
-join -1 1 -2 1 -t "$(printf '\011')" <(sort -k 1,1 byTFE_out/${OUTPUT_NAME}_annotation.txt) <(sort -k 1,1 byTFE_tmp/${OUTPUT_NAME}_TFE-region-peak.txt)  \
-> byTFE_tmp/${OUTPUT_NAME}_TFE-region-peak-anno.txt
-join -1 1 -2 1 -t "$(printf '\011')" <(echo -e "Geneid""\t""Gene""\t""Annotation""\t""Chr""\t""Start""\t""End""\t""Peak""\t""Strand" \
-| cat - <(sort -k 1,1 byTFE_tmp/${OUTPUT_NAME}_TFE-region-peak-anno.txt)) <(cat byTFE_tmp/${OUTPUT_NAME}_byTFE-counts.txt | sed -e '1d'  \
-| awk 'NR<2{print $0;next}{print $0| "sort -k 1,1"}') | cut -f-8,13- | awk 'NR<2{print $0;next}{print $0| "sort -k4,4 -k5,5n -k8,8"}'  \
-| sed -e "1 s/Geneid/TFE/g" | sed -e "1 s/byTFE_tmp\/class\///g" | sed -e "1 s/.output.bam//g" | sed -e "1 s/\//\|/g"\
-> byTFE_out/${OUTPUT_NAME}_byTFE-counts_annotation.txt
-
-rm byTFE_tmp/${OUTPUT_NAME}_TFE-region-peak.txt &&rm byTFE_tmp/${OUTPUT_NAME}_TFE-region-peak-anno.txt
+R CMD BATCH --slave --vanilla  ../bin/QC-plot.R QC-plot.R.log 
