@@ -25,7 +25,7 @@ TFE (transcript far 5'-end)-based analysis developed in [Töhönen et al. 2015](
      | 9 | NA | 
     
   In this case, transcript assemblies are performed using i) samples 1, 4, 7 for classA, ii) 2, 5, 8 for classB, and iii) 3, 6 for classC, respectively. Then first exons are collected from all these 3 classes and named as TFEs. Sample 9 is not used for the analysis. 
-  - `refGene.txt` or `knowngene-names.txt` or `ens-genes.txt` : Prepared within the STRT2 NextSeq-pipeline (STRT2.sh or STRT2-UPPMAX.sh), which is used for the annotation of TFE peaks.
+  - `refGene.txt`, `knowngene-names.txt`,  `ens-genes.txt`, or `Gencode.txt`  : Prepared within the STRT2 NextSeq-pipeline (STRT2.sh or STRT2-UPPMAX.sh), which is used for the annotation of TFE peaks.
   
 ## Example usage
 ```
