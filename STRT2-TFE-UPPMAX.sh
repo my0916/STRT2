@@ -16,7 +16,7 @@ EOS
 
 function version() {
   cat << EOS >&2
-STRT2-NextSeq-automated-pipeline_TFE-based ver2019.12.21
+STRT2-NextSeq-automated-pipeline_TFE-based ver2020.6.30
 EOS
   exit 1
 }
@@ -151,17 +151,21 @@ intersectBed -wa -wb -s -a byTFE_tmp/${OUTPUT_NAME}_TFE-regions.bed -b byTFE_tmp
 
 #Annotation of peaks
 mkdir src/anno
-if test -f src/ens-genes.txt && test ! -f src/knowngene-names.txt && test ! -f src/refGene.txt; then
+if test -f src/ens-genes.txt && test ! -f src/knowngene-names.txt && test ! -f src/refGene.txt && test ! -f src/Gencode.txt; then
   echo "Annotation with Ensembl"
   ruby bin/ensGene_annotation.rb
   shift 2
-elif test ! -f src/ens-genes.txt && test -f src/knowngene-names.txt && test ! -f src/refGene.txt; then
+elif test ! -f src/ens-genes.txt && test -f src/knowngene-names.txt && test ! -f src/refGene.txt && test ! -f src/Gencode.txt; then
   echo "Annotation with UCSC KnownGenes"
   ruby bin/knownGene_annotation.rb
   shift 2
-elif test ! -f src/ens-genes.txt && test ! -f src/knowngene-names.txt && test -f src/refGene.txt; then
+elif test ! -f src/ens-genes.txt && test ! -f src/knowngene-names.txt && test -f src/refGene.txt && test ! -f src/Gencode.txt; then
   echo "Annotation with NCBI RefSeq"
   ruby bin/refGene_annotation.rb
+  shift 2
+elif test ! -f src/ens-genes.txt && test ! -f src/knowngene-names.txt && test ! -f src/refGene.txt && test -f src/Gencode.txt; then
+  echo "Annotation with GENCODE"
+  ruby bin/GENCODE_annotation.rb
   shift 2
 else
   echo "Something is wrong with the annotation data file."
