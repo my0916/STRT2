@@ -179,9 +179,9 @@ fi
 module load bioinfo-tools
 module load picard/2.20.4
 module load HISAT2/2.1.0
-module load samtools/1.9
-module load BEDTools/2.27.1
-module load subread/1.5.2
+module load samtools/1.10
+module load BEDTools/2.29.2
+module load subread/2.0.0
 module load ruby/2.6.2
 
 #Temporary and output directory
