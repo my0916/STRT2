@@ -139,7 +139,7 @@ https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_s
 
 ## fastq-fastQC-UPPMAX.sh
 After running the pipeline above, you can generate fastq files for each sample from the output BAM files in the `fastq` directory. <br>
-FastQC files are also generated for each fastq file in the `fastqc` directory.
+[FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) files are also generated for each fastq file in the `fastqc` directory.
 
 ## How to build HISAT2 index
 Here is the case for the dog genome (canFam3).
