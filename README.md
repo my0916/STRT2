@@ -137,6 +137,10 @@ Metrics file indicating the numbers of duplicates produced by the Picard MarkDup
 https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_sam_markduplicates_MarkDuplicates.php
 
 
+## fastq-fastQC-UPPMAX.sh
+You can generate fastq files for each sample from the output BAM files in the `Output_bam` directory.
+FastQC files are also generated for each fastq file.
+
 ## How to build HISAT2 index
 Here is the case for the dog genome (canFam3).
 ### 1. Obtain the genome sequences of reference and ERCC spike-ins. 
