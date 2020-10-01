@@ -108,7 +108,7 @@ Quality check report for all samples.
 
 - __`OUTPUT`-QC-plots.pdf__ <br>
 Quality check report by boxplots.
-`Total_reads`, `Mapped_reads`, `Spikein_reads`, `Mapped / Spikein`, `Spikein-5end_rate`, and `Coding-5end_rate` are shown for all samples. Barcode numbers of outlier samples are marked with red characters.<br> Please consider these outlier samples for the further downstream analysis.
+`Mapped_reads`, `Mapping_rate`, `Spikein_reads`, `Mapped / Spikein`, `Spikein-5end_rate`, and `Coding-5end_rate` are shown for all samples. Barcode numbers of outlier samples are marked with red characters.<br> Please consider these outlier samples for the further downstream analysis.
 
 - __`OUTPUT`\_byGene-counts.txt__ <br>
 Read count table output from featureCounts.
@@ -139,7 +139,8 @@ https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_s
 
 ## fastq-fastQC-UPPMAX.sh
 After running the pipeline above, you can generate fastq files for each sample from the output BAM files in the `fastq` directory. These fastq files (without duplicated reads) can be submitted to public sequence databases.<br>
-[FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) files are also generated for each fastq file in the `fastqc` directory.
+[FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) files are also generated for each fastq file in the `fastqc` directory.<br>
+Based on the FastQC results, [MultiQC](https://multiqc.info/) report (__MultiQC_report.html__) is generated.
 
 ## How to build HISAT2 index
 Here is the case for the dog genome (canFam3).
