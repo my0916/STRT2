@@ -2,9 +2,11 @@
 module load bioinfo-tools
 module load samtools/1.9
 module load FastQC/0.11.8
+module load MultiQC/1.9
 
-mkdir out/Output_bam/fastq
-for file in out/Output_bam/*.output.bam; do name=$(basename $file .output.bam); samtools fastq -F 256 -F 1024 $file | pigz -c > out/Output_bam/fastq/$name.fq.gz; done
+mkdir out/fastq
+for file in out/Output_bam/*.output.bam; do name=$(basename $file .output.bam); samtools fastq -F 256 -F 1024 $file | pigz -c > out/fastq/$name.fq.gz; done
 
-mkdir out/Output_bam/fastq/fastQC
-fastqc -t 24 --nogroup -o out/Output_bam/fastq/fastQC out/Output_bam/fastq/*.fq.gz
+mkdir out/fastQC
+fastqc -t 24 --nogroup -o out/fastQC out/fastq/*.fq.gz
+multiqc out/fastQC/ -n MultiQC_report.html 
