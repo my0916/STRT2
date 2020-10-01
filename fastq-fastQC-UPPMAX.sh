@@ -10,5 +10,5 @@ for file in out/Output_bam/*.output.bam; do name=$(basename $file .output.bam); 
 mkdir out/fastQC
 fastqc -t 24 --nogroup -o out/fastQC out/fastq/*.fq.gz
 
-OUTPUT_NAME=$(basename out/Output_bam/*_1.output.bam _1.output.bam)
+OUTPUT_NAME=$(basename out/fastQC/*_1_fastqc.html _1_fastqc.html)
 multiqc out/fastQC/ -n out/${OUTPUT_NAME}_MultiQC_report.html 
