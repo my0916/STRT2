@@ -177,8 +177,8 @@ fi
 
 #Loading required tools
 module load bioinfo-tools
-module load picard/2.20.4
-module load HISAT2/2.1.0
+module load picard/2.23.4
+module load HISAT2/2.2.1
 module load samtools/1.10
 module load BEDTools/2.29.2
 module load subread/2.0.0
@@ -210,21 +210,21 @@ done
 #Convert BCL files to BAM files
 for i in `seq 1 $nlanes`
 do
-java -Xmx16g -jar $PICARD_HOME/picard.jar ExtractIlluminaBarcodes \
-BASECALLS_DIR=${BaseCallsDir_PATH}/ \
-LANE=${i} \
-READ_STRUCTURE=${READ_STRUCTURE} \
-BARCODE_FILE=src/barcode.txt  \
-METRICS_FILE=metrics_output_lane${i}.txt ;
-java -Xmx16g -jar $PICARD_HOME/picard.jar IlluminaBasecallsToSam \
-BASECALLS_DIR=${BaseCallsDir_PATH}/ \
-LANE=${i} \
-READ_STRUCTURE=${READ_STRUCTURE} \
-RUN_BARCODE=${run_VALUE} \
-IGNORE_UNEXPECTED_BARCODES=true \
-LIBRARY_PARAMS=library.param.lane${i} \
-SEQUENCING_CENTER=${center_VALUE} \
-INCLUDE_NON_PF_READS=false
+java -jar $PICARD_HOME/picard.jar ExtractIlluminaBarcodes \
+--BASECALLS_DIR ${BaseCallsDir_PATH}/ \
+--LANE ${i} \
+--READ_STRUCTURE ${READ_STRUCTURE} \
+--BARCODE_FILE src/barcode.txt  \
+--METRICS_FILE metrics_output_lane${i}.txt ;
+java -jar $PICARD_HOME/picard.jar IlluminaBasecallsToSam \
+--BASECALLS_DIR ${BaseCallsDir_PATH}/ \
+--LANE ${i} \
+--READ_STRUCTURE ${READ_STRUCTURE} \
+--RUN_BARCODE ${run_VALUE} \
+--IGNORE_UNEXPECTED_BARCODES true \
+--LIBRARY_PARAMS library.param.lane${i} \
+--SEQUENCING_CENTER ${center_VALUE} \
+--INCLUDE_NON_PF_READS false
 done
 
 rm library.param.lane*
@@ -233,10 +233,10 @@ mkdir out/ExtractIlluminaBarcodes_Metrics && mv metrics_output_lane*.txt out/Ext
 #Make the fasta reference / sequence dictionary if they do not exist. 
 if [[ ! -e ${Index_PATH}.fasta ]]; then
   hisat2-inspect ${Index_PATH} > ${Index_PATH}.fasta
-  java -Xmx16g -jar $PICARD_HOME/picard.jar CreateSequenceDictionary R=${Index_PATH}.fasta O=${Index_PATH}.dict
+  java -jar $PICARD_HOME/picard.jar CreateSequenceDictionary --REFERENCE ${Index_PATH}.fasta --OUTPUT ${Index_PATH}.dict
 fi
 if [[ ! -e ${Index_PATH}.dict ]]; then
-  java -Xmx16g -jar $PICARD_HOME/picard.jar CreateSequenceDictionary R=${Index_PATH}.fasta O=${Index_PATH}.dict
+  java -jar $PICARD_HOME/picard.jar CreateSequenceDictionary --REFERENCE ${Index_PATH}.fasta --OUTPUT ${Index_PATH}.dict
 fi
 
 #Mapping by HISAT2 and merging with the original unaligned BAM files to generate UMI-annotated BAM files
@@ -248,57 +248,58 @@ if [ $IF_DTA = true ]; then
   do
   name=$(basename $file .bam)
   echo $name >> out/HISAT2_Metrics/Alignment-summary.txt 
-  java -Xmx16g -jar $PICARD_HOME/picard.jar SortSam \
-      I=$file \
-      O=tmp/.unmapped.sorted.bam \
-     SORT_ORDER=queryname;
-  java -Xmx16g -jar $PICARD_HOME/picard.jar SamToFastq \
-  I=tmp/.unmapped.sorted.bam \
-  F=/dev/stdout \
-    | hisat2 -p 8 --dta -x ${Index_PATH} \
-    -U /dev/stdin -S /dev/stdout \
+  java -jar $PICARD_HOME/picard.jar SortSam \
+      --INPUT $file \
+      --OUTPUT tmp/.unmapped.sorted.bam \
+      --SORT_ORDER queryname;
+  java -jar $PICARD_HOME/picard.jar SamToFastq \
+  --INPUT tmp/.unmapped.sorted.bam \
+  --FASTQ tmp/.tmp.fastq ;
+    hisat2 -p 8 --dta -x ${Index_PATH} \
+    -U tmp/.tmp.fastq -S /dev/stdout \
     2>> out/HISAT2_Metrics/Alignment-summary.txt  \
-    | java -Xmx16g -jar $PICARD_HOME/picard.jar SortSam \
-      I=/dev/stdin \
-      O=tmp/.mapped.sorted.sam \
-      SORT_ORDER=queryname;
-      java -Xmx16g -jar $PICARD_HOME/picard.jar MergeBamAlignment \
-      ATTRIBUTES_TO_RETAIN=XS \
-      UNMAPPED=tmp/.unmapped.sorted.bam  \
-      ALIGNED=tmp/.mapped.sorted.sam \
-      O=tmp/UMI/$name.umi.bam \
-      R=${Index_PATH}.fasta
+    | java -jar $PICARD_HOME/picard.jar SortSam \
+      --INPUT /dev/stdin \
+      --OUTPUT tmp/.mapped.sorted.sam \
+      --SORT_ORDER queryname;
+      java -jar $PICARD_HOME/picard.jar MergeBamAlignment \
+      --ATTRIBUTES_TO_RETAIN XS \
+      --UNMAPPED_BAM tmp/.unmapped.sorted.bam  \
+      --ALIGNED_BAM tmp/.mapped.sorted.sam \
+      --OUTPUT tmp/UMI/$name.umi.bam \
+      --REFERENCE_SEQUENCE ${Index_PATH}.fasta
   done
 else
   for file in *.bam
   do
   name=$(basename $file .bam)
   echo $name >> out/HISAT2_Metrics/Alignment-summary.txt 
-  java -Xmx16g -jar $PICARD_HOME/picard.jar SortSam \
-      I=$file \
-      O=tmp/.unmapped.sorted.bam \
-     SORT_ORDER=queryname;
-  java -Xmx16g -jar $PICARD_HOME/picard.jar SamToFastq \
-  I=tmp/.unmapped.sorted.bam \
-  F=/dev/stdout \
+  java -jar $PICARD_HOME/picard.jar SortSam \
+       --INPUT $file \
+       --OUTPUT tmp/.unmapped.sorted.bam \
+       --SORT_ORDER queryname;
+  java -jar $PICARD_HOME/picard.jar SamToFastq \
+  --INPUT tmp/.unmapped.sorted.bam \
+  --FASTQ tmp/.tmp.fastq \
     | hisat2 -p 8 -x ${Index_PATH} \
-    -U /dev/stdin -S /dev/stdout \
+    -U tmp/.tmp.fastq -S /dev/stdout \
     2>> out/HISAT2_Metrics/Alignment-summary.txt  \
-    | java -Xmx16g -jar $PICARD_HOME/picard.jar SortSam \
-      I=/dev/stdin \
-      O=tmp/.mapped.sorted.sam \
-      SORT_ORDER=queryname;
-      java -Xmx16g -jar $PICARD_HOME/picard.jar MergeBamAlignment \
-      ATTRIBUTES_TO_RETAIN=XS \
-      UNMAPPED=tmp/.unmapped.sorted.bam  \
-      ALIGNED=tmp/.mapped.sorted.sam \
-      O=tmp/UMI/$name.umi.bam \
-      R=${Index_PATH}.fasta
+    | java -jar $PICARD_HOME/picard.jar SortSam \
+      --INPUT /dev/stdin \
+      --OUTPUT tmp/.mapped.sorted.sam \
+      --SORT_ORDER queryname;
+      java -jar $PICARD_HOME/picard.jar MergeBamAlignment \
+      --ATTRIBUTES_TO_RETAIN XS \
+      --UNMAPPED_BAM tmp/.unmapped.sorted.bam  \
+      --ALIGNED_BAM tmp/.mapped.sorted.sam \
+      --OUTPUT tmp/UMI/$name.umi.bam \
+      --REFERENCE_SEQUENCE ${Index_PATH}.fasta
   done
 fi
 
 rm tmp/.unmapped.sorted.bam
 rm tmp/.mapped.sorted.sam
+rm tmp/.tmp.fastq
 mkdir tmp/merged
 mkdir tmp/Unaligned_bam
 mv *.bam tmp/Unaligned_bam
@@ -306,26 +307,28 @@ mv *.bam tmp/Unaligned_bam
 #Merging all lanes
 for i in `seq 1 $NLINES`
 do
-java -Xmx16g -jar $PICARD_HOME/picard.jar MergeSamFiles \
-$(printf "I=%s " tmp/UMI/${OUTPUT_NAME}_${i}_Lane*.umi.bam) \
-O=/dev/stdout |
-java -Xmx16g -jar $PICARD_HOME/picard.jar AddOrReplaceReadGroups \
-I=/dev/stdin \
-O=tmp/merged/${OUTPUT_NAME}_${i}.merged.bam \
-RGLB=${OUTPUT_NAME}_${i} RGPL=NextSeq RGPU=${i} RGSM=${i}
+ls tmp/UMI/${OUTPUT_NAME}_${i}_Lane*.umi.bam > tmp/.list
+sed -e "s/tmp/--INPUT tmp/" tmp/.list > tmp/.bam.list
+rm tmp/.list
+java -jar $PICARD_HOME/picard.jar MergeSamFiles \
+$(cat tmp/.bam.list) \
+--OUTPUT /dev/stdout |
+java -jar $PICARD_HOME/picard.jar AddOrReplaceReadGroups \
+--INPUT /dev/stdin \
+--OUTPUT tmp/merged/${OUTPUT_NAME}_${i}.merged.bam \
+--RGLB ${OUTPUT_NAME}_${i} --RGPL NextSeq --RGPU ${i} --RGSM ${i}
+rm tmp/.bam.list
 done
-
-rm -rf tmp/UMI
 
 #Mark potential PCR duplicates 
 mkdir out/MarkDuplicates_Metrics
 for i in `seq 1 $NLINES`
 do
-java -Xmx16g -jar $PICARD_HOME/picard.jar MarkDuplicates \
-INPUT=tmp/merged/${OUTPUT_NAME}_${i}.merged.bam \
-OUTPUT=out/${OUTPUT_NAME}_${i}.output.bam \
-METRICS_FILE=out/MarkDuplicates_Metrics/${OUTPUT_NAME}_${i}.metrics.txt \
-BARCODE_TAG=RX
+java -jar $PICARD_HOME/picard.jar MarkDuplicates \
+--INPUT tmp/merged/${OUTPUT_NAME}_${i}.merged.bam \
+--OUTPUT out/${OUTPUT_NAME}_${i}.output.bam \
+--METRICS_FILE out/MarkDuplicates_Metrics/${OUTPUT_NAME}_${i}.metrics.txt \
+--BARCODE_TAG RX
 done
 
 rm -rf tmp/merged
@@ -430,7 +433,7 @@ mkdir Output_bai && mv *.bam.bai Output_bai
 mkdir Output_bam && mv *.bam Output_bam
 
 #Plotting
-module load R/3.6.1
-module load R_packages/3.6.1
+module load R/4.0.0
+module load R_packages/4.0.0
 
 R CMD BATCH --slave --vanilla  ../bin/QC-plot.R QC-plot.R.log 
