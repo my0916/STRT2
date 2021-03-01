@@ -68,7 +68,7 @@ fi
 
 module load bioinfo-tools
 module load samtools/1.10
-module load StringTie/1.3.3
+module load StringTie/2.1.4
 module load BEDTools/2.29.2
 module load subread/2.0.0
 module load ruby/2.6.2
