@@ -320,6 +320,8 @@ java -jar $PICARD_HOME/picard.jar AddOrReplaceReadGroups \
 rm tmp/.bam.list
 done
 
+rm -rf tmp/UMI
+
 #Mark potential PCR duplicates 
 mkdir out/MarkDuplicates_Metrics
 for i in `seq 1 $NLINES`
