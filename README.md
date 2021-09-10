@@ -14,6 +14,13 @@ For STRT2.sh & STRT2-UPPMAX.sh
 - [bedtools](https://bedtools.readthedocs.io/en/latest/)
 - [Subread](http://subread.sourceforge.net/)
 
+For STRT-TFE.sh & STRT2-TFE-UPPMAX.sh
+- [StringTie](https://ccb.jhu.edu/software/stringtie/)
+
+For fastq-fastQC.sh & fastq-fastQC-UPPMAX.sh
+- [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+- [MultiQC](https://multiqc.info/)
+
 ## Requirements
 - Illumina BaseCalls files (.bcl). The number of lanes are determined based on the number of directories in the basecalls directory. Here is an example of 4 lanes: 
 ```
