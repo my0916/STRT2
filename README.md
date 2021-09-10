@@ -21,6 +21,8 @@ For fastq-fastQC.sh & fastq-fastQC-UPPMAX.sh
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 - [MultiQC](https://multiqc.info/)
 
+The conda environment is provided as condaEnv.yml.
+
 ## Requirements
 - Illumina BaseCalls files (.bcl). The number of lanes are determined based on the number of directories in the basecalls directory. Here is an example of 4 lanes: 
 ```
