@@ -7,21 +7,21 @@ A pipeline for the analysis of STRT2 RNA-sequencing outputs from NextSeq.
 git clone https://github.com/my0916/STRT2.git
 ```
 ## Dependencies
-For STRT2.sh & STRT2-UPPMAX.sh
+For `STRT2.sh` & `STRT2-UPPMAX.sh`
 - [Picard](https://broadinstitute.github.io/picard/)
 - [HISAT2](https://ccb.jhu.edu/software/hisat2/index.shtml)
 - [SAMtools](http://samtools.sourceforge.net/)
 - [bedtools](https://bedtools.readthedocs.io/en/latest/)
 - [Subread](http://subread.sourceforge.net/)
 
-For STRT-TFE.sh & STRT2-TFE-UPPMAX.sh
+For `STRT-TFE.sh` & `STRT2-TFE-UPPMAX.sh`
 - [StringTie](https://ccb.jhu.edu/software/stringtie/)
 
-For fastq-fastQC.sh & fastq-fastQC-UPPMAX.sh
+For `fastq-fastQC.sh` & `fastq-fastQC-UPPMAX.sh`
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 - [MultiQC](https://multiqc.info/)
 
-The conda environment is provided as condaEnv.yml.
+The conda environment is provided as `condaEnv.yml`.
 
 ## Requirements
 - Illumina BaseCalls files (.bcl). The number of lanes are determined based on the number of directories in the basecalls directory. Here is an example of 4 lanes: 
