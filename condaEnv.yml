@@ -13,4 +13,5 @@ dependencies:
   - samtools=1.10
   - stringtie=2.1.4
   - subread=2.0.0
+  - r-base=4.0.0
   - ruby=2.6.6
