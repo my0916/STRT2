@@ -7,17 +7,17 @@ A pipeline for the analysis of STRT2 RNA-sequencing outputs from NextSeq.
 git clone https://github.com/my0916/STRT2.git
 ```
 ## Dependencies
-For `STRT2.sh` & `STRT2-UPPMAX.sh`
+For `STRT2.sh`
 - [Picard](https://broadinstitute.github.io/picard/)
 - [HISAT2](https://ccb.jhu.edu/software/hisat2/index.shtml)
 - [SAMtools](http://samtools.sourceforge.net/)
 - [bedtools](https://bedtools.readthedocs.io/en/latest/)
 - [Subread](http://subread.sourceforge.net/)
 
-For `STRT-TFE.sh` & `STRT2-TFE-UPPMAX.sh`
+For `STRT-TFE.sh`
 - [StringTie](https://ccb.jhu.edu/software/stringtie/)
 
-For `fastq-fastQC.sh` & `fastq-fastQC-UPPMAX.sh`
+For `fastq-fastQC.sh`
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 - [MultiQC](https://multiqc.info/)
 
@@ -26,6 +26,8 @@ The conda environment is provided as `condaEnv.yml`. The environment can be crea
 conda env create -f condaEnv.yml
 conda activate STRT2_env
 ```
+
+For [UPPMAX](https://www.uppmax.uu.se/), these software are available through the `module` command in the scripts (`STRT2-UPPMAX.sh`, `STRT2-TFE-UPPMAX.sh`, and `fastq-fastqc-uppmax.sh`).
 
 ## Requirements
 - Illumina BaseCalls files (.bcl). The number of lanes is determined based on the number of directories in the basecalls directory. Here is an example of 4 lanes: 
@@ -59,7 +61,7 @@ conda activate STRT2_env
 ./STRT2.sh -o STRT2LIB -g canFam3 -a ens -b /path/to/Data/Intensities/BaseCalls/ \
 -i /path/to/index/canFam3_reference -c HUDDINGE -r ABCDEFG123
 ```
-For [UPPMAX](https://www.uppmax.uu.se/):
+For [UPPMAX]:
 ```
 sbatch -A snic2017-7-317 -p core -n 8 -t 24:00:00 ./STRT2-UPPMAX.sh -o STRT2LIB -g canFam3 -a ens \
 -b /path/to/Data/Intensities/BaseCalls/ -i /path/to/index/canFam3_reference -c HUDDINGE -r ABCDEFG123 
