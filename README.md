@@ -7,17 +7,17 @@ A pipeline for the analysis of STRT2 RNA-sequencing outputs from NextSeq.
 git clone https://github.com/my0916/STRT2.git
 ```
 ## Dependencies
-For `STRT2.sh`
+For `STRT2.sh` (the main pipeline)
 - [Picard](https://broadinstitute.github.io/picard/)
 - [HISAT2](https://ccb.jhu.edu/software/hisat2/index.shtml)
 - [SAMtools](http://samtools.sourceforge.net/)
 - [bedtools](https://bedtools.readthedocs.io/en/latest/)
 - [Subread](http://subread.sourceforge.net/)
 
-For `STRT-TFE.sh`
+For `STRT-TFE.sh` ([TFE-based analysis](https://github.com/my0916/STRT2/blob/master/TFE-README.md))
 - [StringTie](https://ccb.jhu.edu/software/stringtie/)
 
-For `fastq-fastQC.sh`
+For `fastq-fastQC.sh` 
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 - [MultiQC](https://multiqc.info/)
 
