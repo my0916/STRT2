@@ -2,7 +2,7 @@
 
 PROGNAME="$( basename $0 )"
 
-#Usage
+# Usage
 function usage() {
   cat << EOS >&2
 Usage: ${PROGNAME} [-o <output>] [-g <genome (required)>] [-a <annotation>] [-b <path (required)>] [-i <path (required)>]
@@ -30,13 +30,14 @@ EOS
   exit 1
 }
 
-#Default parameters
+# Default parameters
 OUTPUT_NAME=OUTPUT
 run_VALUE=RUNBARCODE
 center_VALUE=CENTER
 READ_STRUCTURE=8M3S74T6B
 IF_DTA=false
 
+# Parameter settings
 PARAM=()
 for opt in "$@"; do
     case "${opt}" in
@@ -175,7 +176,7 @@ fi
 [ "${Index}" != "true" ] && usage
 [ "${ANNO}" != "true" ] && ANNO_VALUE=ref
 
-#Loading required tools
+# Loading required tools
 module load bioinfo-tools
 module load picard/2.23.4
 module load HISAT2/2.2.1
@@ -184,11 +185,11 @@ module load BEDTools/2.29.2
 module load subread/2.0.0
 module load ruby/2.6.2
 
-#Temporary and output directory
+# Make temporary and output directory
 mkdir tmp
 mkdir out
 
-#Preparation for barcodes
+# Preparation for barcodes
 ALL_LINES=`cat src/barcode.txt | wc -l`
 NLINES=`expr $ALL_LINES \- 1`
 
@@ -200,14 +201,14 @@ paste tmp/out <(awk 'NR>1{print $1}' src/barcode.txt) | cut -f 1-4 > tmp/out2 &&
 echo -e ${OUTPUT_NAME}_non-indexed_Lane1.bam"\t"${OUTPUT_NAME}_non-indexed_Lane1"\t" ${OUTPUT_NAME}_non-indexed_Lane1"\t"N >> tmp/out2
 echo -e OUTPUT"\t"SAMPLE_ALIAS"\t"LIBRARY_NAME"\t"BARCODE_1  | cat - tmp/out2 > library.param.lane1 && rm tmp/out2
 
-##Number of lanes
+# Number of lanes
 nlanes=`ls -l ${BaseCallsDir_PATH} | grep ^d | wc -l`
 for i in `seq 2 $nlanes`
 do
 sed -e "s/Lane1/Lane${i}/g" library.param.lane1 > library.param.lane${i}
 done
 
-#Convert BCL files to BAM files
+# Convert BCL files to BAM files
 for i in `seq 1 $nlanes`
 do
 java -jar $PICARD_HOME/picard.jar ExtractIlluminaBarcodes \
@@ -230,7 +231,7 @@ done
 rm library.param.lane*
 mkdir out/ExtractIlluminaBarcodes_Metrics && mv metrics_output_lane*.txt out/ExtractIlluminaBarcodes_Metrics
 
-#Make the fasta reference / sequence dictionary if they do not exist. 
+# Make the fasta reference / sequence dictionary if they do not exist. 
 if [[ ! -e ${Index_PATH}.fasta ]]; then
   hisat2-inspect ${Index_PATH} > ${Index_PATH}.fasta
   java -jar $PICARD_HOME/picard.jar CreateSequenceDictionary --REFERENCE ${Index_PATH}.fasta --OUTPUT ${Index_PATH}.dict
@@ -239,7 +240,7 @@ if [[ ! -e ${Index_PATH}.dict ]]; then
   java -jar $PICARD_HOME/picard.jar CreateSequenceDictionary --REFERENCE ${Index_PATH}.fasta --OUTPUT ${Index_PATH}.dict
 fi
 
-#Mapping by HISAT2 and merging with the original unaligned BAM files to generate UMI-annotated BAM files
+# Mapping by HISAT2 and merging with the original unaligned BAM files to generate UMI-annotated BAM files
 mkdir tmp/UMI
 mkdir out/HISAT2_Metrics
 
@@ -304,7 +305,7 @@ mkdir tmp/merged
 mkdir tmp/Unaligned_bam
 mv *.bam tmp/Unaligned_bam
 
-#Merging all lanes
+# Merging all lanes
 for i in `seq 1 $NLINES`
 do
 ls tmp/UMI/${OUTPUT_NAME}_${i}_Lane*.umi.bam > tmp/.list
@@ -322,7 +323,7 @@ done
 
 rm -rf tmp/UMI
 
-#Mark potential PCR duplicates 
+# Mark potential PCR duplicates 
 mkdir out/MarkDuplicates_Metrics
 for i in `seq 1 $NLINES`
 do
@@ -335,7 +336,7 @@ done
 
 rm -rf tmp/merged
 
-#Preparation for annotation and QC
+# Preparation for annotation and QC
 if [[ ${GENOME_VALUE} = "hg38" ]] && [[ ${ANNO_VALUE} =  "ens" ]]; then
   echo "No Ensembl gene annotations!! Please use RefSeq, KnownGenes, or Gencode for hg38"
   exit 1
@@ -405,7 +406,7 @@ rm src/exon.bed
 rm src/proxup.bed
 rm src/proxup_trimmed.bed
 
-#Quality check
+# Quality check
 cd out
 echo -e Barcode"\t"Qualified_reads"\t"Total_reads"\t"Redundancy"\t"Mapped_reads"\t"Mapping_rate\
 "\t"Spikein_reads"\t"Spikein-5end_reads"\t"Spikein-5end_rate"\t"Coding_reads"\t"Coding-5end_reads"\t"Coding-5end_rate > ${OUTPUT_NAME}-QC.txt
@@ -428,13 +429,13 @@ coding_5end_rate=$(echo "scale=1;$coding_5end_reads*100/$coding_reads" | bc)
 echo -e $name"\t"$QR"\t"$Total"\t"$Redundancy"\t"$Map"\t"$Rate"\t"$Spike"\t"$spikein_5end_reads"\t"$spikein_5end_rate"\t"$coding_reads"\t"$coding_5end_reads"\t"$coding_5end_rate >> ${OUTPUT_NAME}-QC.txt 
 done
 
-#Counting by featureCounts
+# Counting by featureCounts
 featureCounts -T 8 -s 1 --largestOverlap --ignoreDup --primary -a ../src/5end-regions.saf -F SAF -o ${OUTPUT_NAME}_byGene-counts.txt *.bam
 
 mkdir Output_bai && mv *.bam.bai Output_bai
 mkdir Output_bam && mv *.bam Output_bam
 
-#Plotting
+# Plotting
 module load R/4.0.0
 module load R_packages/4.0.0
 
