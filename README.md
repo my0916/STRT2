@@ -21,7 +21,7 @@ For `fastq-fastQC.sh` & `fastq-fastQC-UPPMAX.sh`
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 - [MultiQC](https://multiqc.info/)
 
-The conda environment is provided as `condaEnv.yml`. The environment can be created with the following.
+The conda environment is provided as `condaEnv.yml`. The environment can be created with the followings:
 ```
 conda env create -f condaEnv.yml
 conda activate STRT2_env
