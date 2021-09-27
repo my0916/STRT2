@@ -113,7 +113,7 @@ Quality check report for all samples.
    |`Total_reads`| Read count without redundant (duplicate) reads|
    |`Redundancy` | Qualified reads / Total reads| 
    |`Mapped_reads` | Mapped read count (Total reads without unmapped reads)|
-   |`Mapping_rate` | Mapped reads / Total reads|  
+   |`Mapped_rate` | Mapped reads / Total reads|  
    |`Spikein_reads` | Read count mapped to ERCC spike-ins|
    |`Spikein-5end_reads` | Read count mapped to the 5'-end 50 nt region of ERCC spike-ins|
    |`Spikein-5end_rate` | Spikein-5end reads / Spikein reads|
@@ -123,7 +123,7 @@ Quality check report for all samples.
 
 - __`OUTPUT`-QC-plots.pdf__ <br>
 Quality check report by boxplots.
-`Mapped_reads`, `Mapping_rate`, `Spikein_reads`, `Mapped / Spikein`, `Spikein-5end_rate`, and `Coding-5end_rate` are shown for all samples. Barcode numbers of outlier samples are marked with red characters.<br> Please consider these outlier samples for the further downstream analysis.
+`Mapped_reads`, `Mapped_rate`, `Spikein_reads`, `Mapped / Spikein`, `Spikein-5end_rate`, and `Coding-5end_rate` are shown for all samples. Barcode numbers of outlier samples are marked with red characters.<br> Please consider these outlier samples for the further downstream analysis.
 
 - __`OUTPUT`\_byGene-counts.txt__ <br>
 Read count table output from featureCounts.
