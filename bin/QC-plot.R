@@ -43,5 +43,5 @@ coding5.plot<-ggplot(coding5,aes(y=(`Coding-5end_rate`), x="")) + geom_boxplot(o
 
 #Plot
 pdf(paste0(str_split(QC.file,".txt")[[1]][1],"-plots.pdf"), width=12, height=9)
-plot_grid(mapped.reads.plot, spikein.plot, spike5.plot, mapped.rate.plot,  mapped.plot, coding5.plot, nrow = 2, align = "hv")
+plot_grid(mapped.reads.plot, spikein.plot, spike5.plot, mapped.rate.plot, mapped.plot, coding5.plot, nrow = 2, align = "hv")
 dev.off()
