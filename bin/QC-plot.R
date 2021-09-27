@@ -16,10 +16,10 @@ mapped.reads<-QC %>% mutate(is_outlier=ifelse(is_outlier(log10(`Mapped_reads`)),
 mapped.reads$number[which(is.na(mapped.reads$is_outlier))] <- as.numeric(NA)
 mapped.reads.plot<-ggplot(mapped.reads,aes(y=log10(`Mapped_reads`), x="")) + geom_boxplot(outlier.shape = NA) +geom_point(pch=21,color="darkgray", position = position_jitter(seed = 123))+ geom_text(color="red",fontface="bold",aes(label=number),na.rm=TRUE,position = position_jitter(seed = 123))+theme_bw(base_size = 16)+theme(plot.title = element_text(face = "bold", hjust=.5,size=24), axis.title=element_text(size = 18),axis.text.y=element_text(size = 14,color="black"),panel.grid.major.x = element_blank(),panel.grid.minor.x = element_blank(),panel.border = element_rect(colour = "black", fill=NA, size=1.2),axis.ticks.y = element_line(colour = "black"),axis.ticks.x = element_blank(),legend.title=element_blank())+ylab(expression(paste(log[10]~"(Mapped reads)")))+xlab("")+ggtitle("Mapped reads")
 
-#MAPPING_RATE
-mapping.rate<-QC %>% mutate(is_outlier=ifelse(is_outlier(`Mapping_rate`), `Mapping_rate`, as.numeric(NA)))
-mapping.rate$number[which(is.na(mapping.rate$is_outlier))] <- as.numeric(NA)
-mapping.rate.plot<-ggplot(mapping.rate,aes(y=`Mapping_rate`, x="")) + geom_boxplot(outlier.shape = NA) +geom_point(pch=21,color="darkgray", position = position_jitter(seed = 123))+ geom_text(color="red",fontface="bold",aes(label=number),na.rm=TRUE,position = position_jitter(seed = 123))+theme_bw(base_size = 16)+theme(plot.title = element_text(face = "bold", hjust=.5,size=24), axis.title=element_text(size = 18),axis.text.y=element_text(size = 14,color="black"),panel.grid.major.x = element_blank(),panel.grid.minor.x = element_blank(),panel.border = element_rect(colour = "black", fill=NA, size=1.2),axis.ticks.y = element_line(colour = "black"),axis.ticks.x = element_blank(),legend.title=element_blank())+ylab("Mapping rate (%)")+xlab("")+ggtitle("Mapping rate")
+#MAPPED_RATE
+mapped.rate<-QC %>% mutate(is_outlier=ifelse(is_outlier(`Mapped_rate`), `Mapped_rate`, as.numeric(NA)))
+mapped.rate$number[which(is.na(mapped.rate$is_outlier))] <- as.numeric(NA)
+mapped.rate.plot<-ggplot(mapped.rate,aes(y=`Mapped_rate`, x="")) + geom_boxplot(outlier.shape = NA) +geom_point(pch=21,color="darkgray", position = position_jitter(seed = 123))+ geom_text(color="red",fontface="bold",aes(label=number),na.rm=TRUE,position = position_jitter(seed = 123))+theme_bw(base_size = 16)+theme(plot.title = element_text(face = "bold", hjust=.5,size=24), axis.title=element_text(size = 18),axis.text.y=element_text(size = 14,color="black"),panel.grid.major.x = element_blank(),panel.grid.minor.x = element_blank(),panel.border = element_rect(colour = "black", fill=NA, size=1.2),axis.ticks.y = element_line(colour = "black"),axis.ticks.x = element_blank(),legend.title=element_blank())+ylab("Mapped rate (%)")+xlab("")+ggtitle("Mapped rate")
 
 #SPIKEIN_READS
 spike<-QC %>% mutate(is_outlier=ifelse(is_outlier(log10(`Spikein_reads`)), log10(`Spikein_reads`), as.numeric(NA)))
@@ -43,5 +43,5 @@ coding5.plot<-ggplot(coding5,aes(y=(`Coding-5end_rate`), x="")) + geom_boxplot(o
 
 #Plot
 pdf(paste0(str_split(QC.file,".txt")[[1]][1],"-plots.pdf"), width=12, height=9)
-plot_grid(mapped.reads.plot, spikein.plot, spike5.plot, mapping.rate.plot,  mapped.plot, coding5.plot, nrow = 2, align = "hv")
+plot_grid(mapped.reads.plot, spikein.plot, spike5.plot, mapped.rate.plot,  mapped.plot, coding5.plot, nrow = 2, align = "hv")
 dev.off()
