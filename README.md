@@ -1,6 +1,7 @@
 # STRT2-NextSeq analysis pipeline
 
 A pipeline for the analysis of STRT2 RNA-sequencing outputs from NextSeq.   
+Please cite [Ezer et al. 2021](https://doi.org/10.1016/j.xpro.2021.100995) when you use this pipeline.
 
 ## Install
 ```
