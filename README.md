@@ -3,7 +3,7 @@
 A pipeline for the analysis of STRT2 RNA-sequencing outputs from NextSeq.   
 Please cite [Ezer et al. 2021](https://doi.org/10.1016/j.xpro.2021.100995) when you use this pipeline.
 ```
-Ezer S, Yoshihara M, Katayama S; DoGA consortium; Daub C, Lohi H, Krjutskov K, Kere J.
+Ezer S, Yoshihara M, Katayama S, DoGA consortium, Daub C, Lohi H, Krjutskov K, Kere J.
 Generation of RNA sequencing libraries for transcriptome analysis of globin-rich tissues of the domestic dog.
 STAR Protoc. 2021 Dec 12;2(4):100995.
 ```
